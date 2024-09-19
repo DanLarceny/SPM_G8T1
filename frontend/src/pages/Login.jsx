@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 // import axios from 'axios';
 
 // import css
@@ -10,9 +10,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
-export function LoginPage() {
+export function LoginPage( {login}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
     
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,8 +23,10 @@ export function LoginPage() {
             // localStorage.setItem("access_token", response.data.access_token);
             // localStorage.setItem("username", response.data.data.username);
             // localStorage.setItem("email", response.data.data.email_add);
-            console.log(username,password)
+            console.log(username,password);
+            login();
             alert("Login successful");
+            navigate('/home'); // Redirect to home page
             // setAuth(true)
         } catch (error) {
             alert("Login unsuccessful. Please try again.");
@@ -62,8 +65,6 @@ export function LoginPage() {
                 </div>
             </div>
         
-    
-
         <div className='login-btn-location'>
                 <input className='login-btn' type='submit' value="Let's Go!" />
             </div>
