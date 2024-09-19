@@ -34,48 +34,49 @@ export function LoginPage( {login}) {
     };
 
     return (
-        
-    <div className="user-form">
-        <p className="outfit-font">Welcome Back!</p>
-        <p className="outfit-font2">It's terrific to see you again.</p>
-        <form method="POST" name="login_form" onSubmit={handleSubmit}>
-            <div className='input-group'>
-                <div className='input-field'>
-                    <input 
-                        type='text'
-                        name='username'
-                        required
-                        value={username}
-                        onChange={(event) => { setUsername(event.target.value) }}
-                        className='login-text-field'
-                        placeholder='Username'
-                        autoComplete="off" />
-                </div>
-                <div className='input-field'>
-                    <input
-                        type = 'password'
-                        name='password'
-                        required
-                        className='login-text-field'
-                        value={password}
-                        onChange={(event) => { setPassword(event.target.value) }}
-                        placeholder='Password'
-                        autoComplete="off" />
-                    <div className='visibility-btn' onClick={() => console.log(username,password)}>
-                
+    <div className="box"> 
+        <div className="user-form">
+            <p className="outfit-font">Welcome Back!</p>
+            <p className="outfit-font2">It's terrific to see you again.</p>
+            <form method="POST" name="login_form" onSubmit={handleSubmit}>
+                <div className='input-group'>
+                    <div className='input-field'>
+                        <input 
+                            type='text'
+                            name='username'
+                            required
+                            value={username}
+                            onChange={(event) => { setUsername(event.target.value) }}
+                            className='login-text-field'
+                            placeholder='Username'
+                            autoComplete="off" />
+                    </div>
+                    <div className='input-field'>
+                        <input
+                            type = 'password'
+                            name='password'
+                            required
+                            className='login-text-field'
+                            value={password}
+                            onChange={(event) => { setPassword(event.target.value) }}
+                            placeholder='Password'
+                            autoComplete="off" />
+                        <div className='visibility-btn' onClick={() => console.log(username,password)}>
+                    
+                        </div>
                     </div>
                 </div>
-            </div>
-        
-        <div className='login-btn-location'>
-                <input className='login-btn' type='submit' value="Let's Go!" />
-            </div>
-        </form>
+            
+            <div className='login-btn-location'>
+                    <input className='login-btn' type='submit' value="Let's Go!" />
+                </div>
+            </form>
 
-        <div className='register-link'>
-            <a href='./register'>First time? Sign up here</a>
+            <div className='register-link'>
+                <a href='./register'>First time? Sign up here</a>
+            </div>
         </div>
-        </div>
+    </div>  
 
         );
 };

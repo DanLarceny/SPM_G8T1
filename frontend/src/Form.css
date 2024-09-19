@@ -1,10 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap');
 
+.box {
+  height: 100vh;
+}
+
 .user-form {
   width: 100%;
   max-width: 400px;
   margin: auto;
-  margin-top: 30%;
+  margin-top: 10%;
   padding: 2rem;
   background-color: white;
   border-radius: 8px;
