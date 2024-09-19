@@ -41,7 +41,8 @@ export function LoginPage( {login}) {
         <form method="POST" name="login_form" onSubmit={handleSubmit}>
             <div className='input-group'>
                 <div className='input-field'>
-                    <input type='text'
+                    <input 
+                        type='text'
                         name='username'
                         required
                         value={username}
@@ -52,6 +53,7 @@ export function LoginPage( {login}) {
                 </div>
                 <div className='input-field'>
                     <input
+                        type = 'password'
                         name='password'
                         required
                         className='login-text-field'
@@ -76,7 +78,4 @@ export function LoginPage( {login}) {
         </div>
 
         );
-
-
-
 };
