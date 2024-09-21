@@ -66,7 +66,7 @@ const Register = () => {
           Create your account below
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          <Grid className="input-field" container spacing={2}>
             <Grid item size={{ xs: 6, md: 8 }}>
               <TextField
                 name="employeeId"
