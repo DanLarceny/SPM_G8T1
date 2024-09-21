@@ -4,6 +4,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Grid from '@mui/material/Grid2';
 import { useNavigate } from 'react-router-dom';
 import '../Form.css';
+import axios from 'axios';
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -46,9 +48,28 @@ const Register = () => {
     if (validateForm()) {
       console.log('Form data submitted:', formData);
       // Handle registration logic here
-      navigate('/login');
+      axios.post('http://127.0.0.1:5000/register', {
+        employee_id: formData.employeeId,
+        password: formData.password,
+        reconfirm_password: formData.cpassword,
+    })
+    .then(response => {
+        console.log(response.data);
+        alert("Registration successful!");
+        navigate('/login');  
+    })
+    .catch(error => {
+        console.error("There was an error registering:", error);
+        if (error.response) {
+            alert(error.response.data.error || "Registration failed!");
+        } else {
+            alert("An unexpected error occurred!");
+        }
+    });
+      
     }
   };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
