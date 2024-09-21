@@ -3,3 +3,6 @@
 # venv
 /.venv
 /backend/venv
+venv/ 
+*.env
+.env
