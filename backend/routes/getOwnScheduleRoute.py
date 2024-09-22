@@ -5,7 +5,6 @@ from datetime import datetime
 schedule_bp = Blueprint('schedule', __name__)
 
 @schedule_bp.route('/schedule/<int:staff_id>/<date>' , methods=['GET'])
-
 def getOwnSchedule(staff_id, date):
     
     parsed_date = datetime.strptime(date, '%Y-%m-%d').date()

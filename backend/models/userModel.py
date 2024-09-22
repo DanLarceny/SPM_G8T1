@@ -1,1 +1,0 @@
-# differentiate isRegistered or is not registered
