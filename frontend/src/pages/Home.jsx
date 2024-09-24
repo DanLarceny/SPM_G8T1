@@ -4,10 +4,7 @@ import { Typography, Button, Drawer, List, ListItem, ListItemIcon, ListItemText,
 import { Schedule, Group, Assignment, Description, Person, ExitToApp  } from '@mui/icons-material';
 import Grid from '@mui/material/Grid2';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
-import Calendar from '../components/Calendar.jsx';
-import Navbar from '../components/Navbar.jsx';
-
+import Calendar from '../components/Calendar';
 
 
 export function HomePage({ logout }) {
@@ -23,14 +20,6 @@ export function HomePage({ logout }) {
     };
 
     return (
-    // <div>
-    //     <h1>Welcome to the Home Page</h1>
-    //     <Navbar></Navbar>
-    //     <div>
-    //       <Calendar></Calendar>
-    //     </div>
-    //     <button onClick={handleLogout}>Log Out</button>
-    // </div>
       <Box sx={{ display: 'flex' }}>
         {/* Sidebar Drawer */}
         <Drawer
@@ -105,6 +94,7 @@ export function HomePage({ logout }) {
               </Typography>
             </Grid>
             {/* You can include any additional content here based on the page you are on */}
+            <Calendar pos={{marginTop: "5px"}}></Calendar>
           </Grid>
         </Box>
       </Box>

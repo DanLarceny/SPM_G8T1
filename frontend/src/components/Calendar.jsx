@@ -2,7 +2,7 @@
 
 import { Inject,ScheduleComponent, ViewDirective, ViewsDirective, Day, Week, Month } from '@syncfusion/ej2-react-schedule';
 
-const Calendar = () => {
+const Calendar = (pos) => {
     const data = [
         {
             Id: 1,
@@ -23,7 +23,7 @@ const Calendar = () => {
     console.log(data);
    
     return (
-        <div className="scheduler" style={{marginTop: "5px"}} >
+        <div className="scheduler" style={pos} >
             <ScheduleComponent width={800} height={600} style={{margin: "auto"}} eventSettings={{dataSource:data,}}>
                 <ViewsDirective>
                     <ViewDirective option ="Day"/>
