@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Calendar from '../components/Calendar.jsx';
+import Navbar from '../components/Navbar.jsx';
 
 
 
@@ -16,12 +17,7 @@ export function HomePage({ logout }) {
     return (
     <div>
         <h1>Welcome to the Home Page</h1>
-        <div className='toolbar'>
-          <button>Home</button>
-          <button>Appointment</button>
-          <button>User</button>
-
-        </div>
+        <Navbar></Navbar>
         <div>
           <Calendar></Calendar>
         </div>

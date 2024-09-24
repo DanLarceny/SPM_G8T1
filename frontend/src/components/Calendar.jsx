@@ -23,16 +23,16 @@ const Calendar = () => {
     console.log(data);
    
     return (
-        <div className="scheduler" >
-        <ScheduleComponent width={800} height={600} style={{margin: "auto"}} eventSettings={{dataSource:data,}}>
-          <ViewsDirective>
-            <ViewDirective option ="Day"/>
-            <ViewDirective option='Week' />
-            <ViewDirective option='Month' />
-          </ViewsDirective>
+        <div className="scheduler" style={{marginTop: "5px"}} >
+            <ScheduleComponent width={800} height={600} style={{margin: "auto"}} eventSettings={{dataSource:data,}}>
+                <ViewsDirective>
+                    <ViewDirective option ="Day"/>
+                    <ViewDirective option='Week' />
+                    <ViewDirective option='Month' />
+                </ViewsDirective>
 
-          <Inject services = {[Day, Week, Month]}/>
-        </ScheduleComponent>
+                <Inject services = {[Day, Week, Month]}/>
+            </ScheduleComponent>
         <link href="https://cdn.syncfusion.com/ej2/material.css" rel="stylesheet" type="text/css"/>
         </div>
     );
