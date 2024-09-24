@@ -5,3 +5,7 @@
 /backend/venv
 
 /frontend/.env
+
+venv/ 
+*.env
+.env

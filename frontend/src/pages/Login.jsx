@@ -8,6 +8,7 @@ import '../Form.css';
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Login } from '@mui/icons-material';
 
 
 export function LoginPage({login}) {
@@ -80,3 +81,5 @@ export function LoginPage({login}) {
 
         );
 };
+
+export default LoginPage;
