@@ -1,5 +1,5 @@
 from flask import Blueprint
-from backend.controllers.registration import register_user
+from backend.controllers.employee import register_user
 
 # Create a Blueprint for authentication
 auth_bp = Blueprint('auth', __name__)
