@@ -4,6 +4,13 @@ CREATE TABLE Role (
     Role_Name VARCHAR(50) NOT NULL
 );
 
+INSERT INTO Role (Role, Role_Name)
+VALUES 
+(3, 'Manager'),
+(2, 'Staff'),
+(1, 'HR/Director');
+
+
 -- Creating Employee Table
 CREATE TABLE Employee (
     Staff_ID INT PRIMARY KEY,

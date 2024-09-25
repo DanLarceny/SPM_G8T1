@@ -1,5 +1,6 @@
 # ALL the employee(general user) logic goes here
 
+
 from flask import request, jsonify
 from backend.models.Employee import Employee
 from backend.models.HR_CSuite import db, RegisteredEmployee, Staff, ManagerDirector, HRSeniorManagement

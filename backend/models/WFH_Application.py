@@ -19,20 +19,4 @@ class WFHApplication(db.Model):
     def __repr__(self):
         return f"WFHApplication({self.application_id}, {self.staff_id}, {self.status})"
     
-    # can only be called by repoting_manager
-    def approve(self):
-        self.status = 'Approved'
-        db.session.commit()
-        
-    # can only be called by repoting_manager
-    def reject(self):
-        self.status = 'Rejected'
-        db.session.commit()
-        
-    # can only be called by staff who created this application
-    def withdraw(self):
-        if self.status == 'Pending':
-            self.status = 'Withdrawn'
-            db.session.commit()
-        else:
-            raise Exception("Only pending applications can be withdrawn.")
+    

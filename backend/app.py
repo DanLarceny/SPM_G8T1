@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-import csv
 import os
 from models import Employee
 
@@ -19,8 +18,6 @@ db = SQLAlchemy(app)
 @app.route('/')
 def welcome():
     return 'hi'
-
-
 
 if __name__ == '__main__':
     port_num = os.getenv('FLASK_PORT')

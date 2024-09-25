@@ -16,5 +16,23 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"Employee({self.staff_id}, {self.staff_f_name}, {self.staff_l_name}, {self.role})"
+   
+#   method to get own schedule
+
+#   method to get team schedule
+
+#   method to get all my WFH_Application
+
+#   method to cancel/withdraw schedule
+
+#   method to cancel/withdraw WFH_Application
+
+
+
+
+
+
+
+
 
     

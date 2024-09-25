@@ -19,10 +19,4 @@ class WFHSchedule(db.Model):
     def __repr__(self):
         return f"WFHSchedule({self.schedule_id}, {self.staff_id}, {self.date})"
 
-    # can only be called by the staff who created this schedule in the employee controller
-    def cancel(self):
-        if self.status == 'Upcoming':
-            self.status = 'Cancelled'
-            db.session.commit()
-        else:
-            raise Exception("Only upcoming schedules can be cancelled.")
+    
