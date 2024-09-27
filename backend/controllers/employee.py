@@ -1,6 +1,6 @@
 # ALL the employee(general user) logic goes here
 
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, session
 from models.Employee import Employee
 employee_bp = Blueprint('employee', __name__)
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -63,3 +63,8 @@ def login_user():
     else:
         return jsonify({"error": "Invalid password"}), 401
 
+
+@employee_bp.route('/logout', methods=['POST'])
+def logout_user():
+    session.clear()  # Clear the server-side session
+    return jsonify({"message": "User logged out successfully"}), 200
