@@ -27,25 +27,3 @@ def register_user():
     db.session.commit()
 
     return jsonify({"message": "Registration successful!"}), 201
-
-def login_user():
-    data = request.get_json()
-
-    staff_id = data.get('employee_id')
-    password = data.get('password')
-
-    registered_employee = Employee.query.filter_by(staff_id=staff_id).first()
-
-    if registered_employee.password is None:
-        return jsonify({"error": "User has not registered yet!"}), 400
-
-    if not registered_employee:
-        return jsonify({"error": "Employee not found! Please check that you have registered."}), 400
-
-    if not registered_employee.check_password(password):
-        return jsonify({"error": "Invalid password!"}), 401
-
-    return jsonify({
-        "message": f"Login successful! Welcome {registered_employee.staff_f_name}",
-
-    }), 200
