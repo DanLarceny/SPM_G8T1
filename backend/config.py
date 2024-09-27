@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 # Load environment variables from the .env file
 load_dotenv()
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 class Config:
     """Base configuration"""
     SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')

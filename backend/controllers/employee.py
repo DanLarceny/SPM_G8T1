@@ -1,50 +1,65 @@
 # ALL the employee(general user) logic goes here
 
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
+from models.Employee import Employee
+employee_bp = Blueprint('employee', __name__)
 from werkzeug.security import generate_password_hash, check_password_hash
-from backend.models.Employee import Employee
-from backend.models.HR_CSuite import db, RegisteredEmployee, Staff, ManagerDirector, HRSeniorManagement
-from backend.models.Manager import db, RegisteredEmployee, Staff, ManagerDirector, HRSeniorManagement
+import jwt
+import datetime
+from config import SECRET_KEY  # Make sure to create a SECRET_KEY in your config file
+from extensions import db
 
+@employee_bp.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json()
-
-    staff_id = data.get('employee_id')
+    print(data)
+    employee_id = data.get('employee_id')
     password = data.get('password')
-    cpassword = data.get('cpassword')
+    reconfirm_password = data.get('reconfirm_password')
 
+    if not employee_id or not password or not reconfirm_password:
+        return jsonify({"error": "All fields are required"}), 400
 
-    company_employee = Employee.query.filter_by(staff_id=staff_id).first()
-    if not company_employee:
-        return jsonify({"error": "Invalid ID: Employee not found in company records!"}), 400
-
+    if password != reconfirm_password:
+        return jsonify({"error": "Passwords do not match"}), 400
     
-    if company_employee.password is not None:
-        return jsonify({"error": "Employee is already registered! Please proceed to log in."}), 400
+    check_employee = Employee.get_employee(employee_id)
+    print(check_employee)
+    if not check_employee:
+        return jsonify({"error": "No such employee exists"}), 404
+    else:
+        hashed_password = generate_password_hash(password)
+        check_employee.Password = hashed_password
+        db.session.commit()
+        return jsonify({"message": "User registered successfully"}), 200
 
-    company_employee.set_password(password)
 
-    db.session.commit()
-
-    return jsonify({"message": "Registration successful!"}), 201
-
+@employee_bp.route('/login', methods=['POST'])
 def login_user():
     data = request.get_json()
-
-    staff_id = data.get('employee_id')
+    
+    employee_id = data.get('username')
     password = data.get('password')
 
-    registered_employee = Employee.query.filter_by(staff_id=staff_id).first()
+    if not employee_id or not password:
+        return jsonify({"error": "Employee ID and password are required"}), 400
 
-    if registered_employee.password is None:
-        return jsonify({"error": "User has not registered yet!"}), 400
+    employee = Employee.get_employee(employee_id)
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
 
-    if not registered_employee:
-        return jsonify({"error": "Employee not found! Please check that you have registered."}), 400
+    if check_password_hash(employee.Password, password):
+        # Generate the JWT token
+        token = jwt.encode({
+            'employee_id': employee.Staff_ID,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, SECRET_KEY, algorithm='HS256')
+        return jsonify({
+            "message": "User logged in successfully",
+            "token": token,
+            "username": employee.Staff_FName,
+            "email": employee.Email
+        }), 200
+    else:
+        return jsonify({"error": "Invalid password"}), 401
 
-    if not registered_employee.check_password(password):
-        return jsonify({"error": "Invalid password!"}), 401
-
-    return jsonify({
-        "message": f"Login successful! Welcome {registered_employee.staff_f_name}",
-    }), 200

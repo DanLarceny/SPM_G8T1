@@ -1,19 +1,22 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
 from flask_cors import CORS
 from dotenv import load_dotenv
-
 import os
 from config import DevelopmentConfig
+from controllers.employee import employee_bp
 
 # Load environment variables from .env file
 load_dotenv()
-db = SQLAlchemy()
+
+
+
 
 def create_app(config_type=None):
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     # Set the config based on the provided argument or the FLASK_ENV environment variable
+    
     if config_type:
         app.config.from_object(config_type)
     else:
@@ -26,9 +29,15 @@ def create_app(config_type=None):
     # Bind the app with SQLAlchemy
     db.init_app(app)
 
+    # Register blueprints
+    app.register_blueprint(employee_bp)
+
     @app.route('/')
     def welcome():
         return 'hi'
+    
+    
+        
 
     return app
 

@@ -1,33 +1,27 @@
-from app import db  # Import the db instance
-from models.Role import Role  
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from extensions import db 
+from models.Role import Role
 
 class Employee(db.Model):
     __tablename__ = 'Employee'
     
-    staff_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    staff_f_name = db.Column(db.String(50))
-    staff_l_name = db.Column(db.String(50))
-    dept = db.Column(db.String(50))
-    position = db.Column(db.String(50))
-    country = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    reporting_manager = db.Column(db.Integer, db.ForeignKey('Employee.staff_id'))
-    role = db.Column(db.Integer, db.ForeignKey(Role.role))
-    password = db.Column(db.String(50))
+    Staff_ID = db.Column(db.Integer, primary_key=True)
+    Staff_FName = db.Column(db.String(50), nullable=False)
+    Staff_LName = db.Column(db.String(50), nullable=False)
+    Dept = db.Column(db.String(50), nullable=False)
+    Position = db.Column(db.String(50), nullable=False)
+    Country = db.Column(db.String(50), nullable=False)
+    Email = db.Column(db.String(50), nullable=False)
+    Reporting_Manager = db.Column(db.Integer, db.ForeignKey('Employee.Staff_ID'), nullable=False)
+    Role = db.Column(db.Integer, db.ForeignKey('Role.Role'), nullable=False)
+    Password = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
-        return f"Employee({self.staff_id}, {self.staff_f_name}, {self.staff_l_name}, {self.role})"
+        return f"Employee({self.Staff_ID}, {self.Staff_FName}, {self.Staff_LName}, {self.Role})"
+    
+    @classmethod
+    def get_employee(cls, employee_id):
+        return cls.query.filter_by(Staff_ID=employee_id).first()
 
-#   method to hash and set password
-    def set_password(self, password):
-            self.password = generate_password_hash(password)
-
-#   method to check password for login
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-   
 #   method to get own schedule
     def getOwnSchudules(self):
         return self.schedules
