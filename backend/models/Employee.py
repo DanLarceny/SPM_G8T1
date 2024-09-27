@@ -1,5 +1,6 @@
 from app import db  # Import the db instance
 from models.Role import Role  
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Employee(db.Model):
@@ -18,6 +19,14 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"Employee({self.staff_id}, {self.staff_f_name}, {self.staff_l_name}, {self.role})"
+
+#   method to hash and set password
+    def set_password(self, password):
+            self.password = generate_password_hash(password)
+
+#   method to check password for login
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
    
 #   method to get own schedule
     def getOwnSchudules(self):
