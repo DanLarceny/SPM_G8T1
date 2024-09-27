@@ -13,7 +13,7 @@ class WFHApplication(db.Model):
     email = db.Column(db.String(50))
     reporting_manager = db.Column(db.Integer, db.ForeignKey(Employee.staff_id))
 
-    employee = db.relationship('Employee', foreign_keys=[staff_id])
+    employee = db.relationship('Employee', foreign_keys=[staff_id], backref='applications')
     reporting_manager_rel = db.relationship('Employee', foreign_keys=[reporting_manager])
 
     def __repr__(self):

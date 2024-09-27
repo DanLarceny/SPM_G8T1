@@ -1,6 +1,4 @@
 from app import db  # Import the db instance
-from models.WFH_Schedule import WFHSchedule
-from models.WFH_Application import WFHApplication
 from models.Role import Role  
 
 
@@ -26,43 +24,38 @@ class Employee(db.Model):
         return self.schedules
 
 #   method to get team schedule
-    def getTeamSchedules(self):
-        return WFHSchedule.query.filter(
-            (WFHSchedule.team_id == self.reporting_manager) & 
-            (WFHSchedule.staff_id != self.staff_id)
+    def get_team_schedules(self):
+        # Get all employees with the same reporting manager, excluding self
+        team_members = Employee.query.filter(
+            Employee.reporting_manager == self.reporting_manager,
+            Employee.staff_id != self.staff_id
         ).all()
+
+        # Collect all schedules from team members
+        team_schedules = []
+        for member in team_members:
+            team_schedules.extend(member.schedules)
+
+        return team_schedules
 
 #   method to get all my WFH_Application
     def getAppliactions(self):
-        return WFHApplication.query.filter_by(staff_id=self.staff_id).all()
+        return self.applications
 
 #   method to cancel/withdraw schedule
     def withDrawSchedule(self, schedule_id):
-        schedule = WFHSchedule.query.get(schedule_id)
-        if schedule and schedule.staff_id == self.staff_id:
-            schedule.status = 'Cancelled'
-            db.session.commit()
-            return True
+        for schedule in self.schedules:
+            if schedule.id == schedule_id:
+                schedule.status = 'Cancelled'
+                db.session.commit()
+                return True
         return False
-        
 
 #   method to cancel/withdraw WFH_Application
     def withDrawApplication(self, application_id):
-        application = WFHApplication.query.get(application_id)
-        if application and application.staff_id == self.staff_id:
-            # Change the status to 'Withdrawn'
-            application.status = 'Withdrawn'
-            db.session.commit()
-            return True
+        for application in self.applications:
+            if application.id == application_id:
+                application.status = 'Withdrawn'
+                db.session.commit()
+                return True
         return False
-        
-
-
-
-
-
-
-
-
-
-    
