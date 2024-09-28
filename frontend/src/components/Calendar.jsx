@@ -1,8 +1,10 @@
 "use client"
 
 import { Inject,ScheduleComponent, ViewDirective, ViewsDirective, Day, Week, Month } from '@syncfusion/ej2-react-schedule';
+import '../Calendar.css';
 
-const Calendar = (pos) => {
+
+const Calendar = () => {
     const data = [
         {
             Id: 1,
@@ -21,10 +23,10 @@ const Calendar = (pos) => {
  
     ]
     console.log(data);
-   
+
     return (
-        <div className="scheduler" style={pos} >
-            <ScheduleComponent width={800} height={600} style={{margin: "auto"}} eventSettings={{dataSource:data,}}>
+        <div className="scheduler" >
+            <ScheduleComponent height={"550px"} eventSettings={{dataSource:data,}}>
                 <ViewsDirective>
                     <ViewDirective option ="Day"/>
                     <ViewDirective option='Week' />

@@ -20,7 +20,12 @@ export function LoginPage({login}) {
         event.preventDefault();
         const user = { username, password };
         try {
-            const response = await axios.post('http://127.0.0.1:5001/login', user);
+            // const response = await axios.post('http://127.0.0.1:5000/login', user);
+            let response ={data:{
+                token: "dummy",
+                username: "dummy",
+                email: "hi@gmail",
+            }};
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
             localStorage.setItem("username", response.data.username);

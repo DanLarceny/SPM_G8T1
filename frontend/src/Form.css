@@ -119,3 +119,9 @@ p.outfit-font2 {
 .MuiListItem-root:hover {
   background-color: #f0f0f0;
 }
+
+.application-form {
+  width: 90%;
+  margin:auto;
+  padding-top: 10px;
+}
