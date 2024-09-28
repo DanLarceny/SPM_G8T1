@@ -230,3 +230,57 @@ def createApplication():
         raise e
     
 # withdraw schedule
+@employee_bp.route('/withdrawSchedule', methods=['DELETE'])
+
+def withdrawSchedule(): 
+    try: 
+        data = request.get_json()
+
+        staff_id = data.get('staff_id')
+        schedule_id = data.get('schedule_id')
+        reason = data.get('reason')
+
+        if not staff_id or not schedule_id or not reason: 
+            return jsonify({"error": "Staff ID, Schedule ID, and Reason are all required"}), 400
+
+        employee = Employee.get_employee(staff_id)
+        if not employee:
+            return jsonify({"error": "Employee not found"}), 404
+        
+        schedule = WFHSchedule.query.get(schedule_id)
+        if not schedule:
+            return jsonify({"error": "Schedule not found"}), 404
+        
+        if schedule.Staff_ID != staff_id: 
+            return jsonify({"error": "You can only withdraw your own schedules"}), 403
+        
+        if datetime.now() >= schedule.Date:
+            return jsonify({"error": "Cannot withdraw a schedule that has already started or passed"}), 400
+        
+        # Prompt for confirmation
+        confirmation = data.get('confirmation')
+        if not confirmation or confirmation.lower() != 'confirm':
+            return jsonify({"message": "Please confirm your intention to withdraw this schedule. Send the request again with 'confirmation': 'confirm' in the payload."}), 200
+
+        # Withdraw the schedule
+        schedule.Status = 'Withdrawn'
+        schedule.Withdrawal_Reason = reason
+        # Delete the schedule
+        db.session.delete(schedule)
+        db.session.commit()
+
+        # Notify the manager
+        notify_manager(employee.manager_id, staff_id, schedule_id, reason)
+
+        # Return updated schedules
+        updated_schedules = WFHSchedule.query.filter_by(Staff_ID=staff_id).all()
+        return jsonify({"message": "Schedule withdrawn successfully", "updated_schedules": [s.to_dict() for s in updated_schedules]}), 200
+
+    except SQLAlchemyError as e:
+            db.session.rollback()
+            return jsonify({"error": "An error occurred while withdrawing the schedule. No changes were made."}), 500
+
+def notify_manager(manager_id, staff_id, schedule_id, reason):
+    # Implement your notification logic here
+    # This could involve sending an email, creating a notification in the database, etc.
+    pass

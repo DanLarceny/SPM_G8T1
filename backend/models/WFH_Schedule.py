@@ -12,6 +12,9 @@ class WFHSchedule(db.Model):
     Date = db.Column(db.DateTime, nullable=False)
     Time_Slot = db.Column(db.Enum('AM', 'PM', 'Day'), nullable=False)
     Status = db.Column(db.Enum('Passed', 'Upcoming', 'Cancelled'), nullable=False)
+    Withdrawal_Reason = db.Column(db.String(255), nullable=True)
+    Withdrawal_Confirmed = db.Column(db.Boolean, default=False)
+    Manager_Notified = db.Column(db.Boolean, default=False)
 
     # Relationships
     employee = db.relationship('Employee', foreign_keys=[Staff_ID], backref='schedules')
