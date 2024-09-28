@@ -6,9 +6,9 @@ class WFHSchedule(db.Model):
     __tablename__ = 'WFH_Schedule'
     
     Schedule_ID = db.Column(db.Integer, primary_key=True)
-    Staff_ID = db.Column(db.Integer, db.ForeignKey(Employee.staff_id), nullable=False, index=True)
-    Application_ID = db.Column(db.Integer, db.ForeignKey(WFHApplication.application_id), nullable=False, index=True)
-    Team_ID = db.Column(db.Integer, db.ForeignKey(Employee.staff_id), nullable=False, index=True)
+    Staff_ID = db.Column(db.Integer, db.ForeignKey(Employee.Staff_ID), nullable=False, index=True)
+    Application_ID = db.Column(db.Integer, db.ForeignKey(WFHApplication.Application_ID), nullable=False, index=True)
+    Team_ID = db.Column(db.Integer, db.ForeignKey(Employee.Staff_ID), nullable=False, index=True)
     Date = db.Column(db.DateTime, nullable=False)
     Time_Slot = db.Column(db.Enum('AM', 'PM', 'Day'), nullable=False)
     Status = db.Column(db.Enum('Passed', 'Upcoming', 'Cancelled'), nullable=False)
@@ -26,10 +26,10 @@ class WFHSchedule(db.Model):
 
         try:
             newSchedule = cls(Staff_ID=staff_id, 
-                              Application_ID = application_id, 
-                              Date = date, 
-                              Time_Slot = time_slot, 
-                              Status ='Upcoming')
+                            Application_ID = application_id, 
+                            Date = date, 
+                            Time_Slot = time_slot, 
+                            Status ='Upcoming')
             db.session.add(newSchedule)
             db.session.commit()
             return newSchedule

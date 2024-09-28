@@ -92,7 +92,7 @@ def retrieve_one_schedule():
     
         #if employee and schedule exists, retrieve schedule
         else:
-            schedule_retrieved = employee.getOwnSchudules()
+            schedule_retrieved = employee.getOwnSchedules()
             if schedule_retrieved:
 
                 return jsonify({"schedule": schedule_retrieved,}), 200
