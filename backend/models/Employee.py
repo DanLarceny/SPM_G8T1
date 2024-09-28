@@ -1,6 +1,7 @@
 from extensions import db 
 from models.Role import Role
 
+
 class Employee(db.Model):
     __tablename__ = 'Employee'
     

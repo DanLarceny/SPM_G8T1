@@ -10,8 +10,6 @@ from controllers.employee import employee_bp
 load_dotenv()
 
 
-
-
 def create_app(config_type=None):
     app = Flask(__name__)
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})

@@ -20,3 +20,50 @@ class WFHSchedule(db.Model):
 
     def __repr__(self):
         return f"WFHSchedule({self.Schedule_ID}, Staff ID: {self.Staff_ID}, Application ID: {self.Application_ID}, Date: {self.Date})"
+
+    @classmethod
+    def createSchedule(cls, staff_id, application_id, date, time_slot):
+
+        try:
+            newSchedule = cls(Staff_ID=staff_id, 
+                              Application_ID = application_id, 
+                              Date = date, 
+                              Time_Slot = time_slot, 
+                              Status ='Upcoming')
+            db.session.add(newSchedule)
+            db.session.commit()
+            return newSchedule
+        
+        except Exception as e:
+            db.session.rollback()
+            raise e
+        
+    def updateSchedule(cls, schedule_id, time_slot, date):
+
+        try:
+            schedule_retrieved = cls.query.get(schedule_id)
+            if schedule_retrieved:
+                schedule_retrieved.time_slot = time_slot
+                schedule_retrieved.date = date
+                db.session.commit()
+
+                return schedule_retrieved
+            
+            raise ValueError("Schedule not found")
+        
+        except Exception as e:
+            raise e
+        
+    def cancelSchedule(cls, schedule_id):
+
+        try:
+
+            schedule = cls.query.get(schedule_id)
+            if schedule:
+                schedule.status = 'Cancelled'
+                db.session.commit()
+                return schedule
+            raise ValueError("Schedule not found")
+
+        except Exception as e:
+            raise e
