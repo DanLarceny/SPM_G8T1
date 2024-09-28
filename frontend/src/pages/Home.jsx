@@ -5,12 +5,15 @@ import { Schedule, Group, Assignment, Description, Person, ExitToApp  } from '@m
 import Grid from '@mui/material/Grid2';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Calendar from '../components/Calendar';
+import axios from 'axios';
 
 
 export function HomePage({ logout }) {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+      await axios.post('/api/logout'); // Send a request to the logout endpoint
+      localStorage.removeItem('token'); // Clear the token from local storage
       logout(); // Clear authentication state
       navigate('/login'); // Redirect to login page
     };

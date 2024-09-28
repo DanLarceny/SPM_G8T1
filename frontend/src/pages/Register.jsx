@@ -48,7 +48,7 @@ const Register = () => {
     if (validateForm()) {
       console.log('Form data submitted:', formData);
       // Handle registration logic here
-      axios.post('http://127.0.0.1:5000/register', {
+      axios.post('http://127.0.0.1:5001/register', {
         employee_id: formData.employeeId,
         password: formData.password,
         reconfirm_password: formData.cpassword,
@@ -153,6 +153,7 @@ const Register = () => {
               type="submit"
               variant="contained"
               className='login-btn'
+              onClick={handleSubmit}
             >
               Register
             </Button>

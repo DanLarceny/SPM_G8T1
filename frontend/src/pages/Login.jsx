@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 
 // import css
 import '../App.css';
@@ -20,10 +20,11 @@ export function LoginPage({login}) {
         event.preventDefault();
         const user = { username, password };
         try {
-            // const response = await axios.post('http://127.0.0.1:8004/userlogin', user);
-            // localStorage.setItem("access_token", response.data.access_token);
-            // localStorage.setItem("username", response.data.data.username);
-            // localStorage.setItem("email", response.data.data.email_add);
+            const response = await axios.post('http://127.0.0.1:5001/login', user);
+            console.log(response.data)
+            localStorage.setItem("access_token", response.data.token);
+            localStorage.setItem("username", response.data.username);
+            localStorage.setItem("email", response.data.email);
             console.log(username,password);
             login();
             alert("Login successful");

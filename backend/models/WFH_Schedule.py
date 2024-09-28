@@ -1,28 +1,22 @@
-from app import db  # Import the db instance
+from extensions import db
+from models.Employee import Employee  
+from models.WFH_Application import WFHApplication
 
 class WFHSchedule(db.Model):
     __tablename__ = 'WFH_Schedule'
     
-    schedule_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    staff_id = db.Column(db.Integer, db.ForeignKey('Employee.staff_id'))
-    application_id = db.Column(db.Integer, db.ForeignKey('WFH_Application.application_id'))
-    date = db.Column(db.DateTime)
-    time_slot = db.Column(db.Enum('AM', 'PM', 'Day'))
-    status = db.Column(db.Enum('Passed', 'Upcoming', 'Cancelled'))
+    Schedule_ID = db.Column(db.Integer, primary_key=True)
+    Staff_ID = db.Column(db.Integer, db.ForeignKey(Employee.staff_id), nullable=False, index=True)
+    Application_ID = db.Column(db.Integer, db.ForeignKey(WFHApplication.application_id), nullable=False, index=True)
+    Team_ID = db.Column(db.Integer, db.ForeignKey(Employee.staff_id), nullable=False, index=True)
+    Date = db.Column(db.DateTime, nullable=False)
+    Time_Slot = db.Column(db.Enum('AM', 'PM', 'Day'), nullable=False)
+    Status = db.Column(db.Enum('Passed', 'Upcoming', 'Cancelled'), nullable=False)
 
-    # backref creates a relationship btw the associated models so we can access all schedules of 
-    # an employee by writing : employee.schedules
-    
-    employee = db.relationship('Employee', backref='schedules')
-    application = db.relationship('WFHApplication', backref=db.backref('schedule', uselist=False))  # One-to-one relationship
+    # Relationships
+    employee = db.relationship('Employee', foreign_keys=[Staff_ID], backref='schedules')
+    application = db.relationship('WFHApplication', backref=db.backref('schedule', uselist=False))
+    reporting_manager = db.relationship('Employee', foreign_keys=[Team_ID], backref='managed_schedules')
 
     def __repr__(self):
-        return f"WFHSchedule({self.schedule_id}, {self.staff_id}, {self.date})"
-
-    # can only be called by the staff who created this schedule in the employee controller
-    def cancel(self):
-        if self.status == 'Upcoming':
-            self.status = 'Cancelled'
-            db.session.commit()
-        else:
-            raise Exception("Only upcoming schedules can be cancelled.")
+        return f"WFHSchedule({self.Schedule_ID}, Staff ID: {self.Staff_ID}, Application ID: {self.Application_ID}, Date: {self.Date})"
