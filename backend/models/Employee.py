@@ -1,6 +1,7 @@
 from extensions import db 
 from models.Role import Role
 
+
 class Employee(db.Model):
     __tablename__ = 'Employee'
     
@@ -23,7 +24,7 @@ class Employee(db.Model):
         return cls.query.filter_by(Staff_ID=employee_id).first()
 
 #   method to get own schedule
-    def getOwnSchudules(self):
+    def getOwnSchedules(self):
         return self.schedules
 
 #   method to get team schedule
@@ -42,11 +43,11 @@ class Employee(db.Model):
         return team_schedules
 
 #   method to get all my WFH_Application
-    def getAppliactions(self):
+    def getApplications(self):
         return self.applications
 
 #   method to cancel/withdraw schedule
-    def withDrawSchedule(self, schedule_id):
+    def withdrawSchedule(self, schedule_id):
         for schedule in self.schedules:
             if schedule.id == schedule_id:
                 schedule.status = 'Cancelled'
@@ -55,7 +56,7 @@ class Employee(db.Model):
         return False
 
 #   method to cancel/withdraw WFH_Application
-    def withDrawApplication(self, application_id):
+    def withdrawApplication(self, application_id):
         for application in self.applications:
             if application.id == application_id:
                 application.status = 'Withdrawn'

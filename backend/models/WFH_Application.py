@@ -27,3 +27,26 @@ class WFHApplication(db.Model):
         self.Status = 'Rejected'
         db.session.commit()
 
+    def createApplication(cls, staff_id, start_date, end_date, time_slot, type, email, reporting_manager):
+
+        try:
+
+            new_application = cls(
+                Staff_ID=staff_id,
+                Start_Date=start_date,
+                End_Date=end_date,
+                Time_Slot=time_slot,
+                Type=type,
+                Email=email,
+                Reporting_Manager=reporting_manager,
+                Status='Pending'  #new application->pending
+            )
+
+            db.session.add(new_application)
+            db.session.commit()
+            return new_application
+        
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
