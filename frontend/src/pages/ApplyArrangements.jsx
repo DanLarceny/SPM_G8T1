@@ -68,27 +68,33 @@ export function ApplyArrangementsPage ({ logout }) {
                             sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
                             noValidate
                             autoComplete="off">
-                <div className="reason" >
-                   <span >Reason:</span> <TextField
+                <div className="reason" style={{flexDirection: 'row',display: 'flex',alignItems: 'center'}}>
+                   <span>Reason:</span> <TextField
                         required
                         id="outlined-required"
                         label="Required"
                         defaultValue="eg. Pet appointment"
                         />
                 </div>
-                <div className="arrange-type" >
-                   <span>Arrangement type: <InputLabel id="demo-simple-select-label">type</InputLabel></span> 
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={type}
-          label="Age"
-          onChange={handleTypeChange}
-        >
-          <MenuItem value={'ML'}>ML</MenuItem>
-          <MenuItem value={'AL'}>AL</MenuItem>
-          <MenuItem value={'full'}>full-day</MenuItem>
-        </Select>
+                <div className="arrange-type" style={{width:'50%',flexDirection: 'row',display: 'flex',alignItems: 'center'}}>
+                   <span>Arrangement type: </span> 
+                   <div style={{width:'50%'}}> 
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                            <Select
+                              labelId="select-label"
+                              id="arrangement-select"
+                              value={type}
+                              label="Age"
+                              onChange={handleTypeChange}
+                            >
+                              <MenuItem value={'ML'}>ML</MenuItem>
+                              <MenuItem value={'AL'}>AL</MenuItem>
+                              <MenuItem value={'full'}>full-day</MenuItem>
+                            </Select>
+                        </FormControl>
+                      </div>
+                      
                 </div>
                 <div className="date-select" >
                    <span >Date(s):</span> 
@@ -99,6 +105,7 @@ export function ApplyArrangementsPage ({ logout }) {
 
                 </Box>
             </div>
+            
 
 
             <script type="text/javascript" src="date.js"></script>

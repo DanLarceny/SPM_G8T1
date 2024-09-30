@@ -25,10 +25,11 @@ export function LoginPage({login}) {
                 token: "dummy",
                 username: "dummy",
                 email: "hi@gmail",
-            }};
+            }}; //dummy obj until user side db settled
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
             localStorage.setItem("username", response.data.username);
+            setUsername(response.data.username);
             localStorage.setItem("email", response.data.email);
             console.log(username,password);
             login();
