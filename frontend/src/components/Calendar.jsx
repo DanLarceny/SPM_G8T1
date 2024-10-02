@@ -25,8 +25,8 @@ const Calendar = () => {
     console.log(data);
 
     return (
-        <div className="scheduler" >
-            <ScheduleComponent height={"550px"} eventSettings={{dataSource:data,}}>
+        <div className="scheduler" height={"70vh"} >
+            <ScheduleComponent height={"70%"} eventSettings={{dataSource:data,}}>
                 <ViewsDirective>
                     <ViewDirective option ="Day"/>
                     <ViewDirective option='Week' />

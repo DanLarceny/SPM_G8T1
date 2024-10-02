@@ -12,16 +12,13 @@ import Sidebar from '../components/Sidebar';
 export function HomePage({ logout }) {
     const navigate = useNavigate();
 
-    const handleLogout = async () => {
-      await axios.post('/api/logout'); // Send a request to the logout endpoint
-      localStorage.removeItem('token'); // Clear the token from local storage
-      logout(); // Clear authentication state
-      navigate('/login'); // Redirect to login page
-    };
+    console.log("Logout function in ApplyArrangementsPage: ", logout);
 
     const handleNavigation = (route) => {
       navigate(route);
     };
+
+    console.log('logout in HomePage:', logout);
 
     return (
       <Box sx={{ display: 'flex' }}>

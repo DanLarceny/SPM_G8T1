@@ -21,7 +21,7 @@ export function LoginPage({login}) {
         const user = { username, password };
         try {
             // const response = await axios.post('http://127.0.0.1:5000/login', user);
-            let response ={data:{
+            let response ={data:{  //store response in localStorage
                 token: "dummy",
                 username: "dummy",
                 email: "hi@gmail",

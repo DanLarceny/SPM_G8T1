@@ -7,6 +7,7 @@ const Sidebar = ({ logout }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+      localStorage.clear();
       logout(); // Clear authentication state
       navigate('/login'); // Redirect to login page
     };
@@ -14,7 +15,7 @@ const Sidebar = ({ logout }) => {
     const handleNavigation = (route) => {
       navigate(route);
     };
-
+    
     return (
 
         <Drawer

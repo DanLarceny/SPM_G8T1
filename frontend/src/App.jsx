@@ -27,6 +27,8 @@ function App() {
     setIsAuthenticated(false);
   }
 
+
+
   return (
     <Router>
       <div>
@@ -52,8 +54,13 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/schedule" element={<PersonalSchedulePage />} />
           <Route path="/team-schedule" element={<TeamSchedulePage />} />
-          <Route path="/apply-arrangements" element={<ApplyArrangementsPage />} />
-          <Route path="/arrangement-details" element={<ArrangementDetailsPage />} />
+       
+          <Route path="/apply-arrangements" element={
+            isAuthenticated ? <ApplyArrangementsPage logout={logout} />: <Navigate to="/login" />
+            } />
+          <Route path="/arrangement-details" element={
+            isAuthenticated ? <ArrangementDetailsPage logout={logout} />: <Navigate to="/login" />
+            } />
         </Routes>
       </div>
     </Router>
