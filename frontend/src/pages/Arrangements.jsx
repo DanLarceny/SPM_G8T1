@@ -15,9 +15,20 @@ import AppForm from '../components/AppForm';
 // import css
 import '../App.css';
 import '../Form.css';
-import ArrangementListObject from '../components/ArrangementListObject';
+import ArrangementListObject from '../components/ArrangementTableObject';
 
 export function ArrangementDetailsPage (logout) {
+
+  function createData(applicationId, date, type, reason, status) {
+    return { applicationId, date, type, reason, status };
+  }
+  
+  const rowObjects = [
+    createData(1, [new Date(2024,9,2)], "AL", "Headache", "Pending"),
+    createData(2, [new Date(2024,9,3), new Date(2024,9,10)],"Full-day", "childcare", "Pending"),
+    createData(3, [new Date(2024,9,4)], "ML", "Goldfish funeral",  "Pending"),
+    createData(4, [new Date(2024,9,5)], "AL","Headache", "Pending"),
+  ];
 
     return(
     <Box sx={{ display: 'flex' }}>
@@ -34,7 +45,7 @@ export function ArrangementDetailsPage (logout) {
             </Grid>
             {/* You can include any additional content here based on the page you are on */}
           </Grid>
-          <ArrangementListObject></ArrangementListObject>
+          <ArrangementListObject rows={rowObjects}></ArrangementListObject>
           
 
             <script type="text/javascript" src="date.js"></script>
