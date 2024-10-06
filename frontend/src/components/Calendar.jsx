@@ -8,9 +8,9 @@ const Calendar = () => {
     const data = [
         {
             Id: 1,
-            Subject: "AL",
-            StartTime: new Date(2024,8,21,13,0), //take note, the 8 is somehow september
-            EndTime: new Date(2024,8,21,18,0),
+            Subject: "AL - pers1",
+            StartTime: new Date(2024,9,10,13,0), //take note, the 8 is somehow september
+            EndTime: new Date(2024,9,10,18,0),
             IsAllDay: false,
         },
         {
@@ -20,17 +20,32 @@ const Calendar = () => {
             EndTime: new Date(2024,8,22,12,0),
             IsAllDay: false,
         },
+        {
+            Id: 3,
+            Subject: "full-day",
+            StartTime: new Date(2024,8,22,8,0),
+            EndTime: new Date(2024,8,22,12,0),
+            IsAllDay: false,
+        },
+        {
+            Id: 4,
+            Subject: "AL - pers2",
+            StartTime: new Date(2024,9,10,13,0), //take note, the 8 is somehow september
+            EndTime: new Date(2024,9,10,18,0),
+            IsAllDay: false,
+        },
  
     ]
     console.log(data);
 
     return (
         <div className="scheduler" height={"70vh"} >
-            <ScheduleComponent height={"70%"} eventSettings={{dataSource:data,}}>
+            <ScheduleComponent height={"70%"} 
+            eventSettings={{dataSource:data,}}>
                 <ViewsDirective>
-                    <ViewDirective option ="Day"/>
-                    <ViewDirective option='Week' />
-                    <ViewDirective option='Month' />
+                    <ViewDirective option ="Day" showWeekend={false} readonly={true} />
+                    <ViewDirective option='Week' showWeekend={false} readonly={true} startHour = {'08:00'}/>
+                    <ViewDirective option='Month' showWeekend={false} readonly={true} />
                 </ViewsDirective>
 
                 <Inject services = {[Day, Week, Month]}/>
