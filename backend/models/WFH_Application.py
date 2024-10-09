@@ -32,9 +32,20 @@ class WFHApplication(db.Model):
     def createApplication(cls, staff_id, start_date, end_date, time_slot, type, email, reporting_manager):
 
         try:
+            # Convert dates from string to datetime objects
             start_date = datetime.strptime(start_date, '%Y-%m-%d')
             end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
+            #validate date range 
+            if start_date < datetime.now().date() or end_date < datetime.now().date():
+                raise ValueError("Cannot apply for past time blocks.")
+            
+            if start_date > end_date:
+                raise ValueError("Start Date cannot be after End Date")
+            
+            if start_date > datetime.now().date() + timedelta(days=365):
+                raise ValueError("Cannot apply for dates which are one year away from the present date.")
+            
             if type == 'Recurring':
                 #recurring is how recurring? 
                 interval = timedelta(days=14)
@@ -75,8 +86,6 @@ class WFHApplication(db.Model):
                 )
                 db.session.add(new_application)
 
-
-           
             db.session.commit()
             return new_application
         
