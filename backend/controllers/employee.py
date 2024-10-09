@@ -5,9 +5,11 @@ from models.Employee import Employee
 from models.WFH_Schedule import WFHSchedule
 from models.WFH_Application import WFHApplication
 employee_bp = Blueprint('employee', __name__)
+schedule_bp = Blueprint('schedule', __name__)
+application_bp = Blueprint('application', __name__)
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-import datetime
+import datetime, timedelta
 from config import SECRET_KEY  # Make sure to create a SECRET_KEY in your config file
 from extensions import db
 
@@ -78,6 +80,8 @@ def retrieve_one_schedule():
     try:
 
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body is empty"}), 400
     
         staff_id = data.get('staff_id')
         schedule_id = data.get('schedule_id')
@@ -91,16 +95,16 @@ def retrieve_one_schedule():
             return jsonify({"error": "Employee not found"}), 404
     
         #if employee and schedule exists, retrieve schedule
-        else:
-            schedule_retrieved = employee.getOwnSchedules()
-            if schedule_retrieved:
+        
+        schedule_retrieved = employee.getOwnSchedules()
+        if schedule_retrieved:
 
-                return jsonify({"schedule": schedule_retrieved,}), 200
-            
-            return jsonify({"error": "Schedule not found"}), 404
+            return jsonify({"schedule": schedule_retrieved,}), 200
+        
+        return jsonify({"error": "Schedule not found"}), 404
 
     except Exception as e:
-        raise e
+        return jsonify({"error": str(e)}), 500
     
 @employee_bp.route('/viewTeamSchedules', methods=['GET'])
 #get team schedule
@@ -108,8 +112,10 @@ def view_team_schedules():
     try:
 
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body is empty"}), 400
+        
         staff_id = data.get('staff_id')
-
         if not staff_id:
             return jsonify({"error": "Staff ID is required."}), 400
 
@@ -126,9 +132,9 @@ def view_team_schedules():
             return jsonify({"message": "No team schedules found."}), 404
 
     except Exception as e:
-        raise e
+        return jsonify({"error": str(e)}), 500
     
-@employee_bp.route('/createSchedule', methods=['POST'])
+@schedule_bp.route('/createSchedule', methods=['POST'])
 #create
 
 def createSchedule():
@@ -136,6 +142,8 @@ def createSchedule():
     try:
 
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body is empty"}), 400
     
         staff_id = data.get('staff_id')
         schedule_id = data.get('schedule_id')
@@ -150,21 +158,27 @@ def createSchedule():
         employee = Employee.get_employee(staff_id)
         if not employee:
             return jsonify({"error": "Employee not found"}), 404
+        
+        # Convert date from string to datetime object
+        try:
+            date = datetime.strptime(date, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
 
         # if employee exists, create schedule 
-        else:
-            try:
-                new_schedule = WFHSchedule.createSchedule(staff_id, application_id, date, timeslot)
-                return jsonify({"message": "Schedule created successfully.", "schedule": new_schedule}), 200
-            
-            except Exception as e:
-                return jsonify({"error": "An error occurred while creating the schedule."}), 500
+        
+        try:
+            new_schedule = WFHSchedule.createSchedule(staff_id, application_id, date, timeslot)
+            return jsonify({"message": "Schedule created successfully.", "schedule": new_schedule}), 200
+        
+        except Exception as e:
+            return jsonify({"error": "An error occurred while creating the schedule."}), 500
 
     except Exception as e:
-        raise e
+        return jsonify({"error": str(e)}), 500
 
 #update  
-@employee_bp.route('/updateSchedule', methods=['PUT'])
+@schedule_bp.route('/updateSchedule', methods=['PUT'])
 
 def updateSchedule():
 
@@ -191,7 +205,7 @@ def updateSchedule():
         raise e
     
 #create application 
-@employee_bp.route('/createApplication', methods=['POST'])
+@application_bp.route('/createApplication', methods=['POST'])
 
 def createApplication():
 
@@ -210,6 +224,19 @@ def createApplication():
 
         if not schedule_id or not staff_id or not start_date or not end_date or not timeslot:
             return jsonify({"error": "Some fields are invalid."}), 400
+        
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
+
+        # validate dates
+        if start_date < datetime.now() or end_date < datetime.now():
+            return jsonify({"error": "Cannot apply for present or past time blocks."}), 400
+
+        if start_date > datetime.now() + timedelta(days=365) or end_date > datetime.now() + timedelta(days=365):
+            return jsonify({"error": "Cannot apply for dates that are one year away."}), 400
             
         #check employee, schedules exists
         employee = Employee.query.get(staff_id)
@@ -227,10 +254,54 @@ def createApplication():
         return new_application
 
     except Exception as e:
-        raise e
+        return jsonify({"error": str(e)}), 500
+    
+# search avail dates for app: 
+
+@application_bp.route('/availableDates', methods=['GET'])
+def searchAvailableDates():
+
+    try:
+        data = request.get_json()
+        staff_id = data.get('staff_id')
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+
+        if not staff_id or not start_date or not end_date:
+            return jsonify({"error": "Staff ID , start date, and end date are required."}), 400
+        
+        availDates = WFHApplication.searchForAvailableDates(staff_id, start_date, end_date)
+        return jsonify({"available_dates": availDates}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# display dates for app 
+@application_bp.route('/displayDates', methods=['GET'])
+def displayDates():
+    try: 
+        availDates = WFHApplication.displayAvailableDates()       
+        return jsonify({"available_dates": availDates}), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@application_bp.route('/getApplication', methods=['GET'])
+def getApplication():
+
+    try:
+        data = request.get_json()
+
+        staff_id = data.get('staff_id')
+        application_id = data.get('application_id')
+        application = WFHApplication.getArrangement(staff_id, application_id)
+        return jsonify({"application": application}), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
 # withdraw schedule
-@employee_bp.route('/withdrawSchedule', methods=['DELETE'])
+@schedule_bp.route('/withdrawSchedule', methods=['DELETE'])
 
 def withdrawSchedule(): 
     try: 

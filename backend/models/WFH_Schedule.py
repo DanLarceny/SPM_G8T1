@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from extensions import db
 from models.Employee import Employee  
 from models.WFH_Application import WFHApplication
@@ -28,6 +29,13 @@ class WFHSchedule(db.Model):
     def createSchedule(cls, staff_id, application_id, date, time_slot):
 
         try:
+
+            if date <= datetime.now().date():
+                raise ValueError("Invalid date. Date must be in the future.")
+            
+            if date > datetime.now() + timedelta(days=365):
+                raise ValueError("Invalid date. Date must be within one year.")
+
             newSchedule = cls(Staff_ID=staff_id, 
                             Application_ID = application_id, 
                             Date = date, 
@@ -40,12 +48,18 @@ class WFHSchedule(db.Model):
         except Exception as e:
             db.session.rollback()
             raise e
-        
+
+    @classmethod  
     def updateSchedule(cls, schedule_id, time_slot, date):
 
         try:
+            
             schedule_retrieved = cls.query.get(schedule_id)
             if schedule_retrieved:
+
+                if date <= datetime.now().date():
+                    raise ValueError("Invalid date. Date must be in the future.")
+
                 schedule_retrieved.time_slot = time_slot
                 schedule_retrieved.date = date
                 db.session.commit()
@@ -55,8 +69,10 @@ class WFHSchedule(db.Model):
             raise ValueError("Schedule not found")
         
         except Exception as e:
+            db.session.rollback()
             raise e
-        
+
+    @classmethod  
     def cancelSchedule(cls, schedule_id):
 
         try:
@@ -69,4 +85,5 @@ class WFHSchedule(db.Model):
             raise ValueError("Schedule not found")
 
         except Exception as e:
+            db.session.rollback()
             raise e
