@@ -1,7 +1,6 @@
 from extensions import db 
 from models.Role import Role
 
-
 class Employee(db.Model):
     __tablename__ = 'Employee'
     
@@ -31,8 +30,8 @@ class Employee(db.Model):
     def get_team_schedules(self):
         # Get all employees with the same reporting manager, excluding self
         team_members = Employee.query.filter(
-            Employee.reporting_manager == self.reporting_manager,
-            Employee.staff_id != self.staff_id
+            Employee.Reporting_Manager == self.Reporting_Manager,
+            Employee.Staff_ID != self.Staff_ID
         ).all()
 
         # Collect all schedules from team members

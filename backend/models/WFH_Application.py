@@ -6,7 +6,7 @@ class WFHApplication(db.Model):
     __tablename__ = 'WFH_Application'
     
     Application_ID = db.Column(db.Integer, primary_key=True)
-    Staff_ID = db.Column(db.Integer, db.ForeignKey('Employee.staff_id'), nullable=False, index=True)
+    Staff_ID = db.Column(db.Integer, db.ForeignKey('Employee.Staff_ID'), nullable=False, index=True)
     Start_Date = db.Column(db.DateTime, nullable=False)
     End_Date = db.Column(db.DateTime, nullable=False)
     Status = db.Column(db.Enum('Pending', 'Rejected', 'Approved', 'Withdrawn'), nullable=False)
