@@ -1,6 +1,7 @@
 from extensions import db 
 from models.Role import Role
 
+
 class Employee(db.Model):
     __tablename__ = 'Employee'
     
@@ -48,7 +49,7 @@ class Employee(db.Model):
 #   method to cancel/withdraw schedule
     def withdrawSchedule(self, schedule_id):
         for schedule in self.schedules:
-            if schedule.id == schedule_id:
+            if schedule.Schedule_ID == schedule_id:
                 schedule.status = 'Cancelled'
                 db.session.commit()
                 return True
@@ -57,7 +58,7 @@ class Employee(db.Model):
 #   method to cancel/withdraw WFH_Application
     def withdrawApplication(self, application_id):
         for application in self.applications:
-            if application.id == application_id:
+            if application.Application_ID == application_id:
                 application.status = 'Withdrawn'
                 db.session.commit()
                 return True
