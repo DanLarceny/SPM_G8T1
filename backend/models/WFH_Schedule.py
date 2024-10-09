@@ -87,3 +87,16 @@ class WFHSchedule(db.Model):
         except Exception as e:
             db.session.rollback()
             raise e
+    
+    def can_withdraw(self):
+        # Check if the schedule can be withdrawn (more than 24 hours before the start date)
+        return datetime.now() < self.Date - timedelta(hours=24)
+
+    def withdraw(self, reason):
+        if not self.can_withdraw():
+            raise ValueError("Cannot withdraw a schedule within 24 hours of its start date.")
+        
+        self.Status = 'Withdrawn'
+        self.Withdrawal_Reason = reason
+        db.session.delete(self)
+        db.session.commit()
