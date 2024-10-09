@@ -4,7 +4,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from config import DevelopmentConfig
-from controllers.employee import employee_bp
+from controllers.employee import employee_bp, schedule_bp, application_bp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,6 +29,8 @@ def create_app(config_type=None):
 
     # Register blueprints
     app.register_blueprint(employee_bp)
+    app.register_blueprint(schedule_bp)
+    app.register_blueprint(application_bp)
 
     @app.route('/')
     def welcome():
