@@ -226,14 +226,14 @@ def logout_user():
 #         if not schedule_id or not staff_id or not start_date or not end_date or not timeslot:
 #             return jsonify({"error": "Some fields are invalid."}), 400
         
-        try:
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
+        # try:
+        #     start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        #     end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        # except ValueError:
+        #     return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
             
         #check employee, schedules exists
-        employee = Employee.query.get(staff_id)
+        # employee = Employee.query.get(staff_id)
     
 #         # if employee exists, create application
 #         if employee:
@@ -322,19 +322,19 @@ def logout_user():
 #         if datetime.now() >= schedule.Date:
 #             return jsonify({"error": "Cannot withdraw a schedule that has already started or passed"}), 400
         
-        if not schedule.can_withdraw():
-            return jsonify({"error": "Cannot withdraw a schedule within 24 hours of its start date."}), 400
+        # if not schedule.can_withdraw():
+        #     return jsonify({"error": "Cannot withdraw a schedule within 24 hours of its start date."}), 400
         
-        # Prompt for confirmation
-        confirmation = data.get('confirmation')
-        if not confirmation or confirmation.lower() != 'confirm':
-            return jsonify({"message": "Please confirm your intention to withdraw this schedule. Send the request again with 'confirmation': 'confirm' in the payload."}), 200
+        # # Prompt for confirmation
+        # confirmation = data.get('confirmation')
+        # if not confirmation or confirmation.lower() != 'confirm':
+        #     return jsonify({"message": "Please confirm your intention to withdraw this schedule. Send the request again with 'confirmation': 'confirm' in the payload."}), 200
 
-        #Withdraw schedule
-        try: 
-            schedule.withdraw(reason)
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
+        # #Withdraw schedule
+        # try: 
+        #     schedule.withdraw(reason)
+        # except Exception as e:
+        #     return jsonify({"error": str(e)}), 400
 
 #         # Notify the manager
 #         notify_manager(employee.manager_id, staff_id, schedule_id, reason)
@@ -343,9 +343,9 @@ def logout_user():
 #         updated_schedules = WFHSchedule.query.filter_by(Staff_ID=staff_id).all()
 #         return jsonify({"message": "Schedule withdrawn successfully", "updated_schedules": [s.to_dict() for s in updated_schedules]}), 200
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": "An error occurred while withdrawing the schedule. No changes were made."}), 500
+    # except Exception as e:
+    #     db.session.rollback()
+    #     return jsonify({"error": "An error occurred while withdrawing the schedule. No changes were made."}), 500
 
 # def notify_manager(manager_id, staff_id, schedule_id, reason):
 #     # Implement your notification logic here
