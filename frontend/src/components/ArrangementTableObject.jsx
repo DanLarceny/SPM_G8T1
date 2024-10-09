@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,8 +11,7 @@ import Paper from '@mui/material/Paper';
 
 import ArrangementOverlay from './ArrangementOverlay';
 
-const ArrangementTableObject = ({rows}) =>{
-
+const ArrangementTableObject = ({rows, onUpdateStatus}) =>{
     const [openOverlay, setOpenOverlay] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
 
@@ -66,7 +65,18 @@ const ArrangementTableObject = ({rows}) =>{
                 </Table>
             </TableContainer>
             {selectedRow && (
-                <ArrangementOverlay open={openOverlay} onClose={handleCloseOverlay} rowData={selectedRow} />
+                <ArrangementOverlay  open={openOverlay} onClose={handleCloseOverlay} rowData={selectedRow} 
+                    onCancel={(reason) => {
+                    onUpdateStatus(selectedRow.applicationId, 'Cancelled');
+                    alert(`Status updated for ${selectedRow.applicationId} to cancelled.`); // Log the success message
+                    setSelectedRow(null); // Close overlay after cancel
+                            }}
+                    onWithdraw={(reason) => {
+                        onUpdateStatus(selectedRow.applicationId, 'Withdrawn');
+                        alert(`Status updated for ${selectedRow.applicationId} to withdrawn.`); // Log the success message
+                        setSelectedRow(null); // Close overlay after cancel
+                                }}
+                   />
             )}
         </div>
         

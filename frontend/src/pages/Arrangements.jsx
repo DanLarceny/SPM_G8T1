@@ -17,18 +17,28 @@ import '../App.css';
 import '../Form.css';
 import ArrangementListObject from '../components/ArrangementTableObject';
 
-export function ArrangementDetailsPage (logout) {
+export function ArrangementDetailsPage ({ logout }) {
 
-  function createData(applicationId, date, type, reason, status) {
-    return { applicationId, date, type, reason, status };
+  function createData(applicationId, date, period, type, reason, status, approvingSupervisor, dos) {
+    return { applicationId, date, period, type, reason, status, approvingSupervisor, dos };
   }
-  
+
   const rowObjects = [
-    createData(1, [new Date(2024,9,2)], "AL", "Headache", "Pending"),
-    createData(2, [new Date(2024,9,3), new Date(2024,9,10)],"Full-day", "childcare", "Pending"),
-    createData(3, [new Date(2024,9,4)], "ML", "Goldfish funeral",  "Pending"),
-    createData(4, [new Date(2024,9,5)], "AL","Headache", "Pending"),
+    createData(1, [new Date(2024,9,2)],"AL","Ad-hoc" , "Headache", "Approved", "Super01", new Date),
+    createData(2, [new Date(2024,9,3), new Date(2024,9,10)],"Full-day","Recurring", "childcare", "Pending", "Super01", new Date),
+    createData(3, [new Date(2024,9,4)],"ML","Ad-hoc",  "Goldfish funeral",  "Pending", "Super01", new Date),
+    createData(4, [new Date(2024,9,5)],"AL","Ad-hoc", "Headache", "Pending", "Super01", new Date),
   ];
+
+  const [rows, setRows] = useState(rowObjects);
+
+  const updateRowStatus = (id, newStatus) => {
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.applicationId === id ? { ...row, status: newStatus } : row
+      )
+    );
+  };
 
     return(
     <Box sx={{ display: 'flex' }}>
@@ -45,7 +55,11 @@ export function ArrangementDetailsPage (logout) {
             </Grid>
             {/* You can include any additional content here based on the page you are on */}
           </Grid>
-          <ArrangementListObject rows={rowObjects}></ArrangementListObject>
+          <ArrangementListObject
+           rows={rows}
+           onUpdateStatus={updateRowStatus}
+          //  onCancel={() => updateRowStatus(row.id, 'cancelled')}
+           ></ArrangementListObject>
           
 
             <script type="text/javascript" src="date.js"></script>
