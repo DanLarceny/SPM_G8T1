@@ -12,6 +12,7 @@ import jwt
 import datetime, timedelta
 from config import SECRET_KEY  # Make sure to create a SECRET_KEY in your config file
 from extensions import db
+from sqlalchemy.exc import SQLAlchemyError
 
 @employee_bp.route('/register', methods=['POST'])
 def register_user():

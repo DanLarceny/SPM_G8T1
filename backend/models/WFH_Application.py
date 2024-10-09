@@ -124,7 +124,7 @@ class WFHApplication(db.Model):
             raise e
 
     @classmethod
-    def displayAvailableDates():
+    def displayAvailableDates(start_date, end_date):
             
         try:
 
