@@ -25,6 +25,7 @@ export function LoginPage({login}) {
                 token: "dummy",
                 username: "dummy",
                 email: "hi@gmail",
+                role: "staff",
             }}; //dummy obj until user side db settled
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
@@ -32,6 +33,8 @@ export function LoginPage({login}) {
             setUsername(response.data.username);
             localStorage.setItem("email", response.data.email);
             console.log(username,password);
+            localStorage.setItem("role", response.data.role);
+            
             login();
             alert("Login successful");
             navigate('/home'); // Redirect to home page

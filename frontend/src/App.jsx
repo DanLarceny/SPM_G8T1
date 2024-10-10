@@ -3,7 +3,7 @@ import './App.css';
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-// import ProtectedRoutes from './components/ProtectedRoutes';
+// import ProtectedRoute from './components/ProtectedRoute';
 
 import { LoginPage } from './pages/Login';
 import  RegisterPage  from './pages/Register';
@@ -13,6 +13,7 @@ import { PersonalSchedulePage} from './pages/PersonalSchedule';
 import { TeamSchedulePage} from './pages/TeamSchedule';
 import {ApplyArrangementsPage} from './pages/ApplyArrangements';
 import {ArrangementDetailsPage} from './pages/Arrangements';
+import {ManageApplicationPage} from './pages/ManageApplications';
 
 import UserPage from './pages/User';
 
@@ -60,6 +61,11 @@ function App() {
             } />
           <Route path="/arrangement-details" element={
             isAuthenticated ? <ArrangementDetailsPage logout={logout} />: <Navigate to="/login" />
+            } />
+          <Route path="/manage-applications" element={
+            isAuthenticated ? 
+              <ManageApplicationPage logout={logout}/>
+            : <Navigate to="/login" />
             } />
         </Routes>
       </div>

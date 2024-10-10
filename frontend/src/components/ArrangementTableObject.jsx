@@ -11,9 +11,10 @@ import Paper from '@mui/material/Paper';
 
 import ArrangementOverlay from './ArrangementOverlay';
 
-const ArrangementTableObject = ({rows, onUpdateStatus}) =>{
+const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
     const [openOverlay, setOpenOverlay] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
+    
 
     const handleRowClick = (row) => {
         setSelectedRow(row);
@@ -32,6 +33,9 @@ const ArrangementTableObject = ({rows, onUpdateStatus}) =>{
                 <TableHead>
                     <TableRow>
                         <TableCell>Application ID</TableCell>
+                        {mode === 'leaveApproval' && (
+                        <TableCell align="left">Employee Name</TableCell>
+                        )}
                         <TableCell align="left">Date&nbsp;(s)</TableCell>
                         <TableCell align="left">Type</TableCell>
                         <TableCell align="left">Reason</TableCell>
@@ -48,6 +52,9 @@ const ArrangementTableObject = ({rows, onUpdateStatus}) =>{
                         <TableCell component="th" scope="row">
                             {row.applicationId}
                         </TableCell>
+                        {mode === 'leaveApproval' && (
+                        <TableCell align="left">{row.name}</TableCell>
+                        )}
                         <TableCell align="left">
                             {row.date.map((iDate) => (
                             <div >
@@ -65,16 +72,26 @@ const ArrangementTableObject = ({rows, onUpdateStatus}) =>{
                 </Table>
             </TableContainer>
             {selectedRow && (
-                <ArrangementOverlay  open={openOverlay} onClose={handleCloseOverlay} rowData={selectedRow} 
-                    onCancel={(reason) => {
+                <ArrangementOverlay mode={mode}  open={openOverlay} onClose={handleCloseOverlay} rowData={selectedRow} 
+                    onCancel={(reason) => {  // TODO: ensure methods update WFH application on db side
                     onUpdateStatus(selectedRow.applicationId, 'Cancelled');
-                    alert(`Status updated for ${selectedRow.applicationId} to cancelled.`); // Log the success message
-                    setSelectedRow(null); // Close overlay after cancel
+                    alert(`Status updated for ${selectedRow.applicationId} to cancelled.`); 
+                    setSelectedRow(null); 
                             }}
                     onWithdraw={(reason) => {
                         onUpdateStatus(selectedRow.applicationId, 'Withdrawn');
-                        alert(`Status updated for ${selectedRow.applicationId} to withdrawn.`); // Log the success message
-                        setSelectedRow(null); // Close overlay after cancel
+                        alert(`Status updated for ${selectedRow.applicationId} to withdrawn.`); 
+                        setSelectedRow(null); 
+                                }}
+                    onApprove={() => {
+                        onUpdateStatus(selectedRow.applicationId, 'Approved');
+                        alert(`Status updated for ${selectedRow.applicationId} to approved.`); 
+                        setSelectedRow(null); 
+                                }}
+                    onReject={() => {
+                        onUpdateStatus(selectedRow.applicationId, 'Rejected');
+                        alert(`Status updated for ${selectedRow.applicationId} to rejected.`); 
+                        setSelectedRow(null); 
                                 }}
                    />
             )}

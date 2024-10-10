@@ -13,7 +13,7 @@ function useForceUpdate() {
     return update;
   }
 
-const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) => {
+const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw, onApprove, onReject }) => {
 
     const [reason, setReason] = useState(''); // State to store cancellation reason
     const [successMessage, setSuccessMessage] = useState('');
@@ -33,7 +33,7 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
             reason: reason, // Pass cancellation reason to API
           });
 
-
+          // TODO: Change this to actual connection string
           const response = await fetch('/api/cancel-arrangement', {
             method: 'POST',
             headers: {
@@ -46,7 +46,7 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
           });
           
 
-
+// TODO: Implement erroneous response
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
@@ -75,7 +75,7 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
             reason: reason, // Pass cancellation reason to API
           });
 
-
+          // TODO: Change this to actual connection string
           const response = await fetch('/api/withdraw-arrangement', {
             method: 'POST',
             headers: {
@@ -88,7 +88,7 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
           });
           
 
-
+// TODO: Implement erroneous response
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
@@ -106,6 +106,90 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
         } catch (error) {
           console.error('Error:', error);
           setSuccessMessage('Error while withdrawing the arrangement.');
+        }
+      };
+
+      const handleApprove = async (e) => {
+        e.preventDefault();
+        try {
+          console.log({
+            id: rowData.applicationId,
+            reason: reason, // Pass cancellation reason to API
+          });
+
+          // TODO: Change this to actual connection string
+          const response = await fetch('/api/approve-arrangement', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: rowData.applicationId,
+              reason: reason, // Pass cancellation reason to API
+            }),
+          });
+          
+
+// TODO: Implement erroneous response
+//  use bottom block when connected to BE
+        //   if (!response.ok) {
+        //     const errorResponse = errResponse; // Get mock error response
+        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //   }
+    
+    
+          if (!response.ok) {
+            // Update status, close overlay, and show success message
+            onApprove(reason);
+            setSuccessMessage('Arrangement application successfully approved.');
+          } else {
+            setSuccessMessage('Failed to approve the application.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          setSuccessMessage('Error while approving the application.');
+        }
+      };
+
+      const handleReject = async (e) => {
+        e.preventDefault();
+        try {
+          console.log({
+            id: rowData.applicationId,
+            reason: reason, // Pass cancellation reason to API
+          });
+
+          // TODO: Change this to actual connection string
+          const response = await fetch('/api/reject-arrangement', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: rowData.applicationId,
+              reason: reason, // Pass cancellation reason to API
+            }),
+          });
+          
+
+// TODO: Implement erroneous response
+//  use bottom block when connected to BE
+        //   if (!response.ok) {
+        //     const errorResponse = errResponse; // Get mock error response
+        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //   }
+    
+    
+          if (!response.ok) {
+            // Update status, close overlay, and show success message
+            onReject(reason);
+            setSuccessMessage('Arrangement application successfully rejected.');
+          } else {
+            setSuccessMessage('Failed to reject the application.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          setSuccessMessage('Error while rejecting the application.');
         }
       };
 
@@ -136,6 +220,9 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
                                 {iDate.toLocaleDateString()} {/* Format the date here */}
                             </div>
                                 ))}</p>
+                
+              {mode === 'taskManagement' ? (
+                <>
                 <p>Reason for cancellation/withdrawal: <input
                                                 type="text"
                                                 value={reason}
@@ -149,6 +236,17 @@ const ArrangementOverlay = ({ open, onClose, rowData, onCancel, onWithdraw }) =>
                 {(rowData.status == "Approved" && reason) && (
                 <Button onClick={handleWithdraw}>Withdraw Arrangement</Button>
                 )}
+                </>
+              ) : mode === 'leaveApproval' ? (
+                <>
+                {(
+                  <>
+                    <Button onClick={handleApprove}>Approve Application</Button>
+                    <Button onClick={handleReject}>Reject Application</Button>
+                  </>
+                    )}
+                </>
+              ) : null}
                 </form>
                 
                 <Button onClick={onClose}>Close</Button> 
