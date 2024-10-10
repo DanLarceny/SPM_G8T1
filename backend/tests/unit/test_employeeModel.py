@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from models.Employee import Employee
 from models.WFH_Schedule import WFHSchedule
+
 class TestEmployeeModel(unittest.TestCase):
     def setUp(self):
         self.employee = Employee(

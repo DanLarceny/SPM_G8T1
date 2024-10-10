@@ -1,6 +1,6 @@
-from Employee import Employee;
-from WFH_Schedule import WFHSchedule
-from WFH_Application import WFHApplication
+from .Employee import Employee;
+from .WFH_Schedule import WFHSchedule
+from .WFH_Application import WFHApplication
 
 class Manager(Employee):
     """Manager role inheriting from Employee"""
