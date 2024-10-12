@@ -7,18 +7,18 @@ class Manager(Employee):
 
     def approve_application(self, application_id):
         application = WFHApplication.query.get(application_id)  # Query the application using the provided ID
-        if application and application.status == "Pending" and application.reporting_manager == self.staff_id:
+        if application and application.Status == 'Pending' and application.Reporting_Manager == self.Staff_ID:
             application.approve()  # Calls the approve method of WFHApplication
             return True
         return False
 
     def reject_application(self, application_id):
         application = WFHApplication.query.get(application_id)  # Query the application using the provided ID
-        if application and application.status == "Pending" and application.reporting_manager == self.staff_id:
+        if application and application.Status == "Pending" and application.Reporting_Manager == self.Staff_ID:
             application.reject()  # Calls the reject method of WFHApplication
             return True
         return False
     
     # Returns schedules for employees reporting to the manager
     def get_team_schedules(self):
-        return WFHSchedule.query.filter_by(team_id=self.staff_id).all()
+        return WFHSchedule.query.filter_by(Team_ID=self.Staff_ID).all()
