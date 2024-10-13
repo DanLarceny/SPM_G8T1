@@ -1,5 +1,6 @@
 import { React, useState } from 'react';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 import { Typography ,Box, Button} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -47,7 +48,7 @@ const AppForm = () =>{
 
     const onchange1 = (args) => {
         if (args) {
-            setSelectedValue1(args.value.toLocaleDateString());
+            setSelectedValue1(format(args.value, 'yyyy-MM-dd'));
             setMinDate(args.value);
             console.log(args.value.toLocaleDateString());
         }
@@ -55,7 +56,7 @@ const AppForm = () =>{
 
     const onchange2 = (args) => {
         if (args) {
-            setSelectedValue2(args.value.toLocaleDateString());
+            setSelectedValue2(format(args.value, 'yyyy-MM-dd'));
             console.log(args.value.toLocaleDateString());
         }
     };
@@ -78,18 +79,6 @@ const AppForm = () =>{
         
     };
 
-    const disabledDate2 = (args) => {
-        let today = new Date();
-        if (args.date < today) {
-            args.isDisabled = true;
-        }
-        if (args.date > addDays(today,365)) {
-            args.isDisabled = true;
-        }
-    
-        
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -100,8 +89,7 @@ const AppForm = () =>{
             console.log(application);
             const response = await axios.post('http://127.0.0.1:5000/createApplication', {
                 'employee_id': application.staffId,
-                'start_date': application.selectedValue1,
-                'end_date': application.selectedValue2,
+                'start_date': application.selectedValue1, //may need to use date.parse here                'end_date': application.selectedValue2,
                 'reason': application.reason,
             });
 
@@ -224,7 +212,7 @@ const AppForm = () =>{
                 {type == "Recurring" && ( 
                 <CalendarComponent 
                     id="calendar" 
-                    renderDayCell={disabledDate2} 
+                    renderDayCell={disabledDate} 
                     isMultiSelection={false}
                     change={onchange2}
                     min={minDate}
