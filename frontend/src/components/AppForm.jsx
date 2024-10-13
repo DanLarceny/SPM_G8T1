@@ -1,4 +1,5 @@
 import { React, useState } from 'react';
+import axios from 'axios';
 
 import { Typography ,Box, Button} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,10 +19,47 @@ const AppForm = () =>{
     const [email, setEmail] = useState(() => localStorage.getItem('email') || 'dannytan@allinone.com');
     const [supervisor, setSupervisor] = useState(() => localStorage.getItem('supervisor') || 'super01');
     const [file, setFile] = useState(null);
-    const [selectedValues, setSelectedValues] = useState([]);
+    const [selectedValue1, setSelectedValue1] = useState(null);
+    const [selectedValue2, setSelectedValue2] = useState(null);
     const [type, setType] = useState('');
     const [timeslot, setTimeslot] = useState('');
     const [reason, setReason] = useState('');
+    const [minDate, setMinDate] = useState(new Date());
+    const [selectedDays, setSelectedDays] = useState([]);
+
+    const daysOfWeek = [
+        { id: "Monday", label: 'Monday' },
+        { id: "Tuesday", label: 'Tuesday' },
+        { id: "Wednesday", label: 'Wednesday' },
+        { id: "Thursday", label: 'Thursday' },
+        { id: "Friday", label: 'Friday' },
+    ];
+
+    const handleCheckboxChange = (id) => {
+        setSelectedDays((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter(day => day !== id); // Uncheck
+            } else {
+                return [...prev, id]; // Check
+            }
+        });
+    };
+
+    const onchange1 = (args) => {
+        if (args) {
+            setSelectedValue1(args.value.toLocaleDateString());
+            setMinDate(args.value);
+            console.log(args.value.toLocaleDateString());
+        }
+    };
+
+    const onchange2 = (args) => {
+        if (args) {
+            setSelectedValue2(args.value.toLocaleDateString());
+            console.log(args.value.toLocaleDateString());
+        }
+    };
+
 
     const addDays = (date, days) => {
         const newDate = new Date(date);
@@ -40,21 +78,46 @@ const AppForm = () =>{
         
     };
 
-    const handleSubmit = (event) => {
+    const disabledDate2 = (args) => {
+        let today = new Date();
+        if (args.date < today) {
+            args.isDisabled = true;
+        }
+        if (args.date > addDays(today,365)) {
+            args.isDisabled = true;
+        }
+    
+        
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             alert("Sent request");
             
-            const application = { staffId, email, reason, type, selectedValues, supervisor,file };
-            // const response = await axios.post('http://127.0.0.1:5000/createApplication', application);
+            const application = { staffId, email, reason, type, selectedDays, selectedValue1, selectedValue2, supervisor,file };
+            
             console.log(application);
+            const response = await axios.post('http://127.0.0.1:5000/createApplication', {
+                'employee_id': application.staffId,
+                'start_date': application.selectedValue1,
+                'end_date': application.selectedValue2,
+                'reason': application.reason,
+            });
+
+            // Handle successful response
+            alert(`${response.data.message}`);
+
         } catch (error) {
             console.error("Form submission failed", error);
             alert("form submission failed");
         }
     };
 
-
+    const handleTypeChange = (e) => {
+        e.preventDefault();
+        setType(e.target.value);
+    };
 
     const handleTimeslotChange = (e) => {
         e.preventDefault();
@@ -77,20 +140,6 @@ const AppForm = () =>{
         };
         // reader.readAsDataURL(file);
         
-    };
-
-
-    const onchange = (args) => {
-        if (args) {
-            setSelectedValues(args.values);
-            console.log(args.values);
-            if (args.values.length>1) {
-                setType("Recurring");
-            } 
-            if (args.values.length===1) {
-                setType("One-off");
-            }
-        }
     };
 
     return (
@@ -116,28 +165,73 @@ const AppForm = () =>{
             />
             <div className="arrange-type" style={{width:'50%',flexDirection: 'row',display: 'flex',alignItems: 'center'}}>
             
-                <label for="arrangement-select">Arrangement type:</label>
+            <label for="arrangement-type-select">Arrangement type:</label>
+                <select
+                id="arrangement-type-select"
+                value={type}
+                style ={{margin:'10px'}}
+                label="timeslot"
+                onChange={handleTypeChange}
+                >
+                <option value={'AdHoc'}>Ad-Hoc</option>
+                <option value={'Recurring'}>Recurring</option>
+               
+                </select>
+            </div>
+            <div className="arrange-timeslot" style={{width:'50%',flexDirection: 'row',display: 'flex',alignItems: 'center'}}>
+            
+                <label for="arrangement-select">Arrangement timeslot:</label>
                     <select
                     id="arrangement-select"
                     value={timeslot}
                     style ={{margin:'10px'}}
-                    label="type"
+                    label="timeslot"
                     onChange={handleTimeslotChange}
                     >
-                    <option value={'ML'}>AM</option>
-                    <option  value={'AL'}>PM</option>
-                    <option value={"full"}>Full-day</option>
+                    <option value={'AM'}>AM</option>
+                    <option value={'PM'}>PM</option>
+                    <option value={"Full-day"}>Full-day</option>
                     </select>
             </div>
+            {type == "Recurring" && ( 
+            <div className="arrange-days" style={{width:'50%',flexDirection: 'row',display: 'flex',alignItems: 'center'}}>
+            
+                <label for="arrangement-days">Days for recurring:</label>
+                {daysOfWeek.map(day => (
+                     <label>
+                        <input
+                            type="checkbox"
+                            id={day.id}
+                            label={day.label}
+                            checked={selectedDays.includes(day.id)}
+                            onChange={() => handleCheckboxChange(day.id)}
+                        />
+                        {day.label}
+                    </label>
+            ))}
+            </div>
+            )}
             <div className="date-select" >
             <span >Date(s):</span> 
-            <CalendarComponent 
-                id="calendar" 
-                renderDayCell={disabledDate} 
-                isMultiSelection={true} values={selectedValues} 
-                change={onchange.bind(this)} 
-                created={onchange.bind(this)}>
-            </CalendarComponent>  
+            <div style = {{display: "flex", flexDirection: "row"}}>
+                <CalendarComponent 
+                    id="calendar" 
+                    renderDayCell={disabledDate} 
+                    isMultiSelection={false}
+                    change={onchange1}
+                >
+                </CalendarComponent> 
+                {type == "Recurring" && ( 
+                <CalendarComponent 
+                    id="calendar" 
+                    renderDayCell={disabledDate2} 
+                    isMultiSelection={false}
+                    change={onchange2}
+                    min={minDate}
+                >
+                </CalendarComponent>  
+                )}
+            </div>
             </div>
             <div>
             <label for="myfile">Select a file: </label>
