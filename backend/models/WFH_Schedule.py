@@ -89,7 +89,7 @@ class WFHSchedule(db.Model):
 
             schedule = cls.query.get(schedule_id)
             if schedule:
-                schedule.status = 'Cancelled'
+                schedule.Status = 'Cancelled'
                 db.session.commit()
                 return schedule
             raise ValueError("Schedule not found")
@@ -100,7 +100,7 @@ class WFHSchedule(db.Model):
     
     def can_withdraw(self):
         # Check if the schedule can be withdrawn (more than 24 hours before the start date)
-        return datetime.now() < self.Date - timedelta(hours=24)
+        return datetime.now() <= self.Date - timedelta(hours=24)
 
     def withdraw(self, reason):
         if not self.can_withdraw():
@@ -108,5 +108,9 @@ class WFHSchedule(db.Model):
         
         self.Status = 'Withdrawn'
         self.Withdrawal_Reason = reason
-        db.session.delete(self)
-        db.session.commit()
+            # Check if the instance is in the session before trying to delete
+        if db.session.is_modified(self):
+            db.session.commit()  # Commit any changes before deletion
+
+        db.session.delete(self)  # Now delete the instance
+        db.session.commit()  # Commit the deletion
