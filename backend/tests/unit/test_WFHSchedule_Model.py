@@ -137,22 +137,22 @@ class TestWFHScheduleModel(unittest.TestCase):
         mock_rollback.assert_called_once()
     
     # #Test update schedule method
-    # @patch('extensions.db.session.commit')
-    # @patch('models.WFH_Schedule.WFHSchedule.query')
-    # def test_update_schedule_happy_path(self, mock_query, mock_commit):
-    #     """Test successfully updating the schedule."""
-    #     # Mock the query to return a valid schedule
-    #     mock_query.get.return_value = self.schedule
+    @patch('extensions.db.session.commit')
+    @patch('models.WFH_Schedule.WFHSchedule.query')
+    def test_update_schedule_happy_path(self, mock_query, mock_commit):
+        """Test successfully updating the schedule."""
+        # Mock the query to return a valid schedule
+        mock_query.get.return_value = self.schedule
 
-    #     result = WFHSchedule.updateSchedule(
-    #         schedule_id=self.schedule_id, 
-    #         time_slot=self.valid_time_slot, 
-    #         date=self.valid_date.date()
-    #     )
+        result = WFHSchedule.updateSchedule(
+            schedule_id=self.schedule_id, 
+            time_slot=self.valid_time_slot, 
+            date=self.valid_date.date()
+        )
 
-    #     self.assertEqual(result.Time_Slot, self.valid_time_slot)
-    #     self.assertEqual(result.Date, self.valid_date.date())
-    #     mock_commit.assert_called_once()
+        self.assertEqual(result.Time_Slot, self.valid_time_slot)
+        self.assertEqual(result.Date, self.valid_date)
+        mock_commit.assert_called_once()
     
     @patch('extensions.db.session.rollback')
     @patch('models.WFH_Schedule.WFHSchedule.query')
@@ -192,16 +192,26 @@ class TestWFHScheduleModel(unittest.TestCase):
 
     #test withdraw method
     @patch('extensions.db.session.commit')
-    def test_withdraw_happy_path(self, mock_commit):
-        # Ensure schedule is withdrawable (more than 24 hours before start)
-        self.schedule.Date = datetime.now() + timedelta(days=2)
-
-        # Call withdraw method with a reason
+    @patch('extensions.db.session.add')
+    @patch('extensions.db.session.delete')
+    def test_withdraw_happy_path(self, mock_delete, mock_add, mock_commit):
+        # Create a new schedule
+        self.schedule = WFHSchedule(Date=datetime.now() + timedelta(days=2))
+        
+        # Simulate adding the schedule to the session
+        db.session.add(self.schedule)
+        
+        # Now call withdraw method with a reason
         self.schedule.withdraw(reason="Personal reason")
-
-        self.assertEqual(self.schedule.Status, 'Withdrawn')
-        self.assertEqual(self.schedule.Withdrawal_Reason, "Personal reason")
-        mock_commit.assert_called_once()
+        
+        # Assert the changes
+        self.assertEqual(self.schedule.status, "Withdrawn")
+        self.assertEqual(self.schedule.withdrawal_reason, "Personal reason")
+        
+        # Check if add, delete, and commit were called
+        mock_add.assert_called_once()
+        mock_delete.assert_called_once()
+        mock_commit.assert_called_once() 
 
     def test_withdraw_within_24_hours(self):
         # Ensure schedule is NOT withdrawable (less than 24 hours before start)

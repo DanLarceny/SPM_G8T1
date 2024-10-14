@@ -106,11 +106,8 @@ class WFHSchedule(db.Model):
         if not self.can_withdraw():
             raise ValueError("Cannot withdraw a schedule within 24 hours of its start date.")
         
-        self.Status = 'Withdrawn'
-        self.Withdrawal_Reason = reason
-            # Check if the instance is in the session before trying to delete
-        if db.session.is_modified(self):
-            db.session.commit()  # Commit any changes before deletion
-
-        db.session.delete(self)  # Now delete the instance
-        db.session.commit()  # Commit the deletion
+        self.status = "Withdrawn"
+        self.withdrawal_reason = reason
+        
+        db.session.delete(self)
+        db.session.commit()

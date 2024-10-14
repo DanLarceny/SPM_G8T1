@@ -1,4 +1,8 @@
 import unittest
+import sys
+import os
+# Add backend to the path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from unittest.mock import MagicMock, patch
 from models.Manager import Manager
 from models.WFH_Application import WFHApplication
