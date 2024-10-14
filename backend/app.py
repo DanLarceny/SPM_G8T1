@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from config import DevelopmentConfig
 from controllers.employee import employee_bp, schedule_bp, application_bp
+from controllers.manager import manager_bp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,11 +32,11 @@ def create_app(config_type=None):
     app.register_blueprint(employee_bp)
     app.register_blueprint(schedule_bp)
     app.register_blueprint(application_bp)
+    app.register_blueprint(manager_bp, url_prefix='/manager')
 
     @app.route('/')
     def welcome():
         return 'hi'
-    
     
         
 
