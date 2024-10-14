@@ -19,14 +19,42 @@ class WFHApplication(db.Model):
 
     def __repr__(self):
         return f"WFHApplication({self.Application_ID}, {self.Staff_ID}, {self.Status})"
+    
+    def __init__(self, Application_ID, Staff_ID, Start_Date, End_Date, Status):
+        self.Application_ID = Application_ID
+        self.Staff_ID = Staff_ID
+        self.Start_Date = Start_Date
+        self.End_Date = End_Date
+        self.Status = Status
+
+        # Validate dates
+        if self.End_Date < self.Start_Date:
+            raise ValueError("End date cannot be earlier than start date")
 
     def approve(self):
-        self.Status = 'Approved'
+        if self.Status == "pending" or self.Status == "Pending" or self.Status == "PENDING":
+            self.Status = "Approved"
+            db.session.commit()
+        elif self.Status == "approved" or self.Status == "Approved" or self.Status == "APPROVED":
+            # Already approved, no action needed
+            pass
+        elif self.Status == "rejected" or self.Status == "Rejected" or self.Status == "REJECTED":
+            raise ValueError("Cannot approve a rejected application")
+        else:
+            raise ValueError(f"Invalid status: {self.Status}")
         db.session.commit()
 
     def reject(self):
-        self.Status = 'Rejected'
-        db.session.commit()
+        if self.Status == "pending" or self.Status == "Pending" or self.Status == "PENDING":
+            self.Status = "Rejected"
+            db.session.commit()
+        elif self.Status == "rejected" or self.Status == "Rejected" or self.Status == "REJECTED":
+            # Already rejected, no action needed
+            pass
+        elif self.Status == "approved" or self.Status == "Approved" or self.Status == "APPROVED":
+            raise ValueError("Cannot reject an approved application")
+        else:
+            raise ValueError(f"Invalid status: {self.Status}")
 
     @classmethod
     def createApplication(cls, staff_id, start_date, end_date, time_slot, type, email, reporting_manager):
