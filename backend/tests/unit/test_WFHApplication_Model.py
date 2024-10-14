@@ -68,14 +68,14 @@ class Test_WFHApplicationModel(unittest.TestCase):
         self.application.approve()
         self.assertEqual(self.application.Status, "Approved")
     
-    def test_approve_case_insensitive(self):
+    def test_reject_case_insensitive(self):
         self.application.Status = "PENDING"
-        self.application.approve()
-        self.assertEqual(self.application.Status, "Approved")
+        self.application.reject()
+        self.assertEqual(self.application.Status, "Rejected")
 
         self.application.Status = "pending"
-        self.application.approve()
-        self.assertEqual(self.application.Status, "Approved")
+        self.application.reject()
+        self.assertEqual(self.application.Status, "Rejected")
 
 
 if __name__ == '__main__':
