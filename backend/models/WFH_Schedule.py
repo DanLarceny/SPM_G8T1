@@ -23,17 +23,27 @@ class WFHSchedule(db.Model):
     reporting_manager = db.relationship('Employee', foreign_keys=[Team_ID], backref='managed_schedules')
 
     def __repr__(self):
-        return f"WFHSchedule({self.Schedule_ID}, Staff ID: {self.Staff_ID}, Application ID: {self.Application_ID}, Date: {self.Date})"
+        return (f"WFHSchedule(Schedule_ID={self.Schedule_ID}, "
+                f"Staff_ID={self.Staff_ID}, "
+                f"Application_ID={self.Application_ID}, "
+                f"Date={self.Date}, "
+                f"Time_Slot={self.Time_Slot}, "
+                f"Status={self.Status})")
 
     @classmethod
     def createSchedule(cls, staff_id, application_id, date, time_slot):
 
         try:
+            # Convert date to datetime if it's a date object
+            if isinstance(date, datetime):
+                schedule_date = date
+            else:
+                schedule_date = datetime.combine(date, datetime.min.time())
 
-            if date <= datetime.now().date():
+            if schedule_date <= datetime.now():
                 raise ValueError("Invalid date. Date must be in the future.")
             
-            if date > datetime.now() + timedelta(days=365):
+            if schedule_date > datetime.now() + timedelta(days=365):
                 raise ValueError("Invalid date. Date must be within one year.")
 
             newSchedule = cls(Staff_ID=staff_id, 
