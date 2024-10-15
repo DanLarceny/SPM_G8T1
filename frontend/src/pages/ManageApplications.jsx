@@ -19,15 +19,15 @@ import ArrangementListObject from '../components/ArrangementTableObject';
 
 export function ManageApplicationPage ({ logout }) {
 
-  function createData(applicationId,name, date, period, type, reason, status, approvingSupervisor, dos) {
-    return { applicationId,name, date, period, type, reason, status, approvingSupervisor, dos };
+  function createData(applicationId,name, startDate, endDate, period, type, days, reason, status, approvingSupervisor, dos) {
+    return { applicationId,name, startDate, endDate, period, type, days, reason, status, approvingSupervisor, dos };
   }
 
   const rowObjects = [
-    createData(1,'sam', [new Date(2024,9,2)],"AL","Ad-hoc" , "Headache", "Approved", "Super01", new Date),
-    createData(2,'whitney', [new Date(2024,9,3), new Date(2024,9,10)],"Full-day","Recurring", "childcare", "Pending", "Super01", new Date),
-    createData(3,'blake', [new Date(2024,9,4)],"ML","Ad-hoc",  "Goldfish funeral",  "Pending", "Super01", new Date),
-    createData(4,'alder', [new Date(2024,9,5)],"AL","Ad-hoc", "Headache", "Pending", "Super01", new Date),
+    createData(1,'sam', new Date(2024,9,2), new Date(2024,9,2),"AL","Ad-hoc" ,[], "Headache", "Approved", "Super01", new Date),
+    createData(2,'whitney', new Date(2024,9,3), new Date(2024,9,10),"Full-day","Recurring",['Monday','Tuesday',"Wednesday","Thursday","Friday"], "childcare", "Pending", "Super01", new Date),
+    createData(3,'blake', new Date(2024,9,4), new Date(2024,9,4),"ML","Ad-hoc",[],  "Goldfish funeral",  "Pending", "Super01", new Date),
+    createData(4,'alder', new Date(2024,9,5), new Date(2024,9,5),"AL","Ad-hoc",[], "Headache", "Pending", "Super01", new Date),
   ];
 
   const [rows, setRows] = useState(rowObjects);

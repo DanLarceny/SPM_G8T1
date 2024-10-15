@@ -7,13 +7,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import Moment from 'moment';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 import ArrangementOverlay from './ArrangementOverlay';
 
 const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
     const [openOverlay, setOpenOverlay] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
+    const [selectedType, setSelectedType] = useState(''); // For Type dropdown
+    const [selectedStatus, setSelectedStatus] = useState(''); // For Status dropdown
     
 
     const handleRowClick = (row) => {
@@ -26,8 +29,41 @@ const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
         setSelectedRow(null);
     };
 
+    const filteredRows = rows.filter(row => {
+        const typeMatches = selectedType ? row.type === selectedType : true;
+        const statusMatches = selectedStatus ? row.status === selectedStatus : true;
+        return typeMatches && statusMatches;
+    });
+
     return(
         <div style={{width:'90%', margin:'auto' , padding:'25px'}} >
+             {/* Dropdown filters */}
+             <Box sx={{ display: 'flex', justifyContent: 'right', marginBottom: '10px' }}>
+                <Select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    displayEmpty
+                    sx={{ minWidth: 120 }}
+                >
+                    <MenuItem value="">All Types</MenuItem>
+                    <MenuItem value="Ad-hoc">Adhoc</MenuItem>
+                    <MenuItem value="Recurring">Recurring</MenuItem>
+                </Select>
+
+                <Select
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    displayEmpty
+                    sx={{ minWidth: 120 }}
+                >
+                    <MenuItem value="">All Status</MenuItem>
+                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="Approved">Approved</MenuItem>
+                    <MenuItem value="Rejected">Rejected</MenuItem>
+                    <MenuItem value="Cancelled">Cancelled</MenuItem>
+                    <MenuItem value="Withdrawn">Withdrawn</MenuItem>
+                </Select>
+            </Box>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -36,14 +72,16 @@ const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
                         {mode === 'leaveApproval' && (
                         <TableCell align="left">Employee Name</TableCell>
                         )}
-                        <TableCell align="left">Date&nbsp;(s)</TableCell>
+                        <TableCell align="left">Start date</TableCell>
+                        <TableCell align="left">End date</TableCell>
                         <TableCell align="left">Type</TableCell>
+                        <TableCell align="left">Days</TableCell>
                         <TableCell align="left">Reason</TableCell>
                         <TableCell align="left">Status</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {filteredRows.map((row) => (
                         <TableRow
                         key={row.applicationId}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -55,14 +93,10 @@ const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
                         {mode === 'leaveApproval' && (
                         <TableCell align="left">{row.name}</TableCell>
                         )}
-                        <TableCell align="left">
-                            {row.date.map((iDate) => (
-                            <div >
-                                {iDate.toLocaleDateString()} {/* Format the date here */}
-                            </div>
-                                ))}
-                        </TableCell>
+                        <TableCell align="left">{row.startDate.toLocaleDateString()}</TableCell>
+                        <TableCell align="left">{row.endDate.toLocaleDateString()}</TableCell>
                         <TableCell align="left">{row.type}</TableCell>
+                        <TableCell align="left">{row.days.length > 0 ? row.days.join(', ') : '-'}</TableCell>
                         <TableCell align="left">{row.reason}</TableCell>
                         <TableCell align="left">{row.status}</TableCell>
                     </TableRow>
@@ -93,7 +127,7 @@ const ArrangementTableObject = ({mode, rows, onUpdateStatus}) =>{
                         alert(`Status updated for ${selectedRow.applicationId} to rejected.`); 
                         setSelectedRow(null); 
                                 }}
-                   />
+                />
             )}
         </div>
         

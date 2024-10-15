@@ -1,5 +1,6 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { Typography ,Box, Button} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -19,15 +20,51 @@ import ArrangementListObject from '../components/ArrangementTableObject';
 
 export function ArrangementDetailsPage ({ logout }) {
 
-  function createData(applicationId, date, period, type, reason, status, approvingSupervisor, dos) {
-    return { applicationId, date, period, type, reason, status, approvingSupervisor, dos };
+  function createData(applicationId, startDate, endDate, period, type,days, reason, status, approvingSupervisor, dos) {
+    return { applicationId, startDate, endDate, period, type,days, reason, status, approvingSupervisor, dos };
   }
 
+
+  // const fetchAndCreateData = async (localStorage.getItem("staff_id")) => {
+  //       try {
+  //           // Make GET request to the endpoint, passing staffId as a parameter
+  //           const response = await axios.get('https://your-endpoint-url.com/api/arrangements', {
+  //               params: { localStorage.getItem("staff_id") }
+  //           });
+
+  //           // Extract rows from the response data
+  //           const rows = response.data; // Assuming response.data is an array of rows
+
+  //           // Loop through each row and call the createData function
+  //           const formattedRows = rows.map(row => createData(
+  //               row.applicationId,
+  //               new Date(row.Start_Date),
+  //               new Date(row.End_Date),
+  //               row.Time_Slot,
+  //               row.Type,  #TODO make sure all rows match db/model side
+  //               row.days,
+  //               row.reason,
+  //               row.Status,
+  //               row.Reporting_Manager,
+  //               row.dos
+  //           ));
+
+  //           // Update state with the formatted rows
+  //           setRows(formattedRows);
+  //       } catch (error) {
+  //           console.error("Error fetching data:", error);
+  //       }
+  //   };
+
+  // useEffect(() => {
+  //     fetchAndCreateData(staffId);  // Pass staffId as argument
+  // }, [staffId]);  // Runs when the staffId changes (or on initial load)
+
   const rowObjects = [
-    createData(1, [new Date(2024,9,2)],"AL","Ad-hoc" , "Headache", "Approved", "Super01", new Date),
-    createData(2, [new Date(2024,9,3), new Date(2024,9,10)],"Full-day","Recurring", "childcare", "Pending", "Super01", new Date),
-    createData(3, [new Date(2024,9,4)],"ML","Ad-hoc",  "Goldfish funeral",  "Pending", "Super01", new Date),
-    createData(4, [new Date(2024,9,5)],"AL","Ad-hoc", "Headache", "Pending", "Super01", new Date),
+    createData(1, new Date(2024,9,2),new Date(2024,9,2),"AL","Ad-hoc" ,[], "Headache", "Approved", "Super01", new Date),
+    createData(2, new Date(2024,9,3), new Date(2024,9,10),"Full-day","Recurring",['Mon','Tues'], "childcare", "Pending", "Super01", new Date),
+    createData(3, new Date(2024,9,4),new Date(2024,9,4),"ML","Ad-hoc",[],  "Goldfish funeral",  "Pending", "Super01", new Date),
+    createData(4, new Date(2024,9,5),new Date(2024,9,5),"AL","Ad-hoc",[], "Headache", "Pending", "Super01", new Date),
   ];
 
   const [rows, setRows] = useState(rowObjects);

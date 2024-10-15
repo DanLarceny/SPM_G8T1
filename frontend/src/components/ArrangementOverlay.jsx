@@ -211,15 +211,13 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
                 <form onSubmit={onCancel}>
                 <h2>{rowData.reason}</h2>
                 <p>Type: {rowData.type}</p>
+                <p>Days: {rowData.days.length > 0 ? rowData.days.join(', ') : '-'}</p>
                 <p>Status: {rowData.status}</p>
                 <p>Period: {rowData.period}</p>
                 <p>Approving supervisor: {rowData.approvingSupervisor}</p>
                 <p>Date of submission: {rowData.dos.toLocaleDateString()}</p>
-                <p>Dates: {rowData.date.map((iDate) => (
-                            <div >
-                                {iDate.toLocaleDateString()} {/* Format the date here */}
-                            </div>
-                                ))}</p>
+                <p>Start date: {rowData.startDate.toLocaleDateString()}</p>
+                <p>End date: {rowData.endDate.toLocaleDateString()}</p>
                 
               {mode === 'taskManagement' ? (
                 <>

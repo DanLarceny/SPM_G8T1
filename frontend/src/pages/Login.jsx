@@ -25,7 +25,7 @@ export function LoginPage({login}) {
                 token: "dummy",
                 username: "dummy",
                 email: "hi@gmail",
-                role: "staff",
+                role: "manager",
             }}; //dummy obj until user side db settled
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
