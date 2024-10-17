@@ -56,7 +56,9 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'selected_days': ['Monday', 'Wednesday'],
             'email': 'test@example.com',
             'reason': 'Personal reasons',
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
+            
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
@@ -71,7 +73,9 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'end_date': '2024-10-25',
             'time_slot': 'PM',
             # Missing email and reason
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
+            
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 400)
@@ -87,7 +91,9 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'time_slot': 'PM',
             'email': 'test@example.com',
             'reason': 'Personal reasons',
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
+            
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 400)
@@ -103,7 +109,8 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'time_slot': 'PM',
             'email': 'test@example.com',
             'reason': 'Personal reasons',
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
@@ -119,7 +126,8 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'time_slot': 'PM',
             'email': 'test@example.com',
             'reason': 'Personal reasons',
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 400)
@@ -135,7 +143,8 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
             'time_slot': 'PM',
             'email': 'test@example.com',
             'reason': 'Personal reasons',
-            'type': 'Recurring'
+            'type': 'Recurring',
+            "file": 'base64encodedfile'
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 400)

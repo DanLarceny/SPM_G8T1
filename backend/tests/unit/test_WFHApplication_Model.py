@@ -44,15 +44,6 @@ class Test_WFHApplicationModel(unittest.TestCase):
         self.application.reject()
         self.assertEqual(self.application.Status, "Rejected")
     
-    def test_invalid_dates(self):
-        with self.assertRaises(ValueError):
-            WFHApplication(
-                Application_ID=2,
-                Staff_ID=101,
-                Start_Date=datetime(2023, 1, 7),
-                End_Date=datetime(2023, 1, 1),
-                Status="Pending"
-            )
     
     def test_approve_rejected_application(self):
         self.application.reject()

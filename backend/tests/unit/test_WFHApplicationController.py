@@ -30,15 +30,15 @@ class TestWFHApplicationController(unittest.TestCase):
         mock_create.return_value = MagicMock(to_dict=lambda: {"success": True})
 
         # Test AdHoc application
-        application = create_application("AdHoc", 130002, datetime.now().date(), datetime.now().date(), "PM", [], "test@example.com", "Reason", 130002)
+        application = create_application("AdHoc", 130002, datetime.now().date(), datetime.now().date(), "PM", [], "test@example.com", "Reason", 130002, "base64encodedfile")
         self.assertTrue(application.to_dict()["success"])
 
         # Test Recurring application
-        application = create_application("Recurring", 130002, datetime.now().date(), datetime.now().date() + timedelta(days=1), "AM", ["Monday"], "test@example.com", "Reason", 130002)
+        application = create_application("Recurring", 130002, datetime.now().date(), datetime.now().date() + timedelta(days=1), "AM", ["Monday"], "test@example.com", "Reason", 130002, "base64encodedfile")
         self.assertTrue(application.to_dict()["success"])
 
         # Test invalid application type
-        application = create_application("InvalidType", 130002, datetime.now().date(), datetime.now().date() + timedelta(days=1), "AM", [], "test@example.com", "Reason", 130002)
+        application = create_application("InvalidType", 130002, datetime.now().date(), datetime.now().date() + timedelta(days=1), "AM", [], "test@example.com", "Reason", 130002, "base64encodedfile")
         self.assertIsNone(application)
 
 if __name__ == "__main__":
