@@ -98,6 +98,7 @@ const AppForm = () =>{
                 'reason': application.reason,
                 'supervisor': application.supervisor,
                 'type': application.type,
+                "file": application.file
             }, {
                 headers: {
                     'Content-Type': 'application/json'
