@@ -34,3 +34,18 @@ def view_pending_wfh_requests(email):
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@manager_bp.route('/approveWFHRequest/<application_id>', methods=['POST'])
+def approve_wfh_request(application_id):
+    try:
+        wfh_request = WFHApplication.query.get(application_id)
+        if not wfh_request:
+            return jsonify({'error': 'Request not found'}), 404
+ 
+        return jsonify({'message': 'Request approved'}), 200
+    
+    
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

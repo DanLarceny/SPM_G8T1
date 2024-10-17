@@ -20,7 +20,7 @@ def validate_dates(start_date, end_date):
     
     return None  # No validation errors
 
-def create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, reporting_manager):
+def create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, reporting_manager, file):
     if application_type == "AdHoc" and len(selected_days) == 0:
         return WFHApplication.createApplication(
             staff_id, 
@@ -31,7 +31,8 @@ def create_application(application_type, staff_id, start_date, end_date, time_sl
             email, 
             reason, 
             application_type, 
-            reporting_manager
+            reporting_manager,
+            file
         )
     elif application_type == "Recurring" and len(selected_days) > 0 and start_date != end_date:
         return WFHApplication.createApplication(
@@ -43,7 +44,8 @@ def create_application(application_type, staff_id, start_date, end_date, time_sl
             email, 
             reason, 
             application_type, 
-            reporting_manager
+            reporting_manager,
+            file
         )
     return None  # For other types
 
@@ -51,7 +53,7 @@ def create_application(application_type, staff_id, start_date, end_date, time_sl
 def apply_wfh():
     data = request.get_json()
     employee_id = data.get('employee_id')
-
+    
     # Fetch the employee
     employee = Employee.get_employee(employee_id)
     
@@ -67,9 +69,10 @@ def apply_wfh():
     email = data.get('email')
     reason = data.get('reason')
     application_type = data.get('type')
+    file = data.get('file')
 
     # Check for required fields
-    required_fields = [staff_id, start_date_str, end_date_str, time_slot, application_type, email, reason]
+    required_fields = [staff_id, start_date_str, end_date_str, time_slot, application_type, email, reason, file]
     if any(field is None for field in required_fields):
         return jsonify({"error": "Missing required fields"}), 400
     
@@ -86,7 +89,7 @@ def apply_wfh():
         return jsonify({"error": validation_error}), 400
     
     # Create the application
-    application = create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, employee.Reporting_Manager)
+    application = create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, employee.Reporting_Manager, file)
     
     if application:
         return jsonify(application.to_dict()), 201

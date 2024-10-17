@@ -40,6 +40,7 @@ CREATE TABLE WFH_Application (
     Email VARCHAR(50) NOT NULL,
     Reporting_Manager INT NOT NULL,
     Reason VARCHAR(255),
+    Encoded_File MEDIUMTEXT,
     FOREIGN KEY (Staff_ID) REFERENCES Employee(Staff_ID),
     FOREIGN KEY (Reporting_Manager) REFERENCES Employee(Staff_ID),
 );

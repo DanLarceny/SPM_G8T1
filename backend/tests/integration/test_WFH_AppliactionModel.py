@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from flask_testing import TestCase
 from extensions import db
 from models.Employee import Employee
-from models.WFHApplication import WFHApplication  # Assuming this is where your model is defined
+from models.WFH_Application import WFHApplication  # Assuming this is where your model is defined
 from config import TestingConfig
 from app import create_app
 from datetime import datetime, timedelta

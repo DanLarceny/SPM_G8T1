@@ -17,6 +17,7 @@ class WFHApplication(db.Model):
     Reporting_Manager = db.Column(db.Integer, nullable=False)
     Days = db.Column(db.String(50))  # Store the days as a comma-separated string
     Reason = db.Column(db.String(255))
+    Encoded_File = db.Column(db.Text)  # Store the encoded file as a text
 
     employee = db.relationship('Employee', foreign_keys=[Staff_ID], backref='applications')
 
@@ -65,7 +66,7 @@ class WFHApplication(db.Model):
             raise ValueError(f"Invalid status: {self.Status}")
 
     @classmethod
-    def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager):   
+    def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager, file):   
         days = ','.join(selected_days) if selected_days else None
         application = cls(
             Staff_ID=staff_id,
@@ -78,6 +79,7 @@ class WFHApplication(db.Model):
             Reporting_Manager=reporting_manager,
             Days= days, # Convert list of days to a comma-separated string
             Reason=reason,
+            Encoded_File=file
         )
         db.session.add(application)
         db.session.commit()
