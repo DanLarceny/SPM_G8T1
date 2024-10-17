@@ -39,6 +39,7 @@ CREATE TABLE WFH_Application (
     Days SET('Mon', 'Tue','Wed', 'Thu','Fri') NULL,
     Email VARCHAR(50) NOT NULL,
     Reporting_Manager INT NOT NULL,
+    Reason VARCHAR(255),
     FOREIGN KEY (Staff_ID) REFERENCES Employee(Staff_ID),
     FOREIGN KEY (Reporting_Manager) REFERENCES Employee(Staff_ID),
 );

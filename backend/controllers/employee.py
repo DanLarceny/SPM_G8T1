@@ -4,15 +4,14 @@ from flask import request, jsonify, Blueprint, session
 from models.Employee import Employee
 from models.WFH_Schedule import WFHSchedule
 from models.WFH_Application import WFHApplication
-employee_bp = Blueprint('employee', __name__)
-schedule_bp = Blueprint('schedule', __name__)
-application_bp = Blueprint('application', __name__)
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
 from config import SECRET_KEY  # Make sure to create a SECRET_KEY in your config file
 from extensions import db
 from sqlalchemy.exc import SQLAlchemyError
+
+employee_bp = Blueprint('employee', __name__)
 
 @employee_bp.route('/register', methods=['POST'])
 def register_user():

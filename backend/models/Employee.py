@@ -20,9 +20,10 @@ class Employee(db.Model):
         return f"Employee({self.Staff_ID}, {self.Staff_FName}, {self.Staff_LName}, {self.Role})"
     
     @classmethod
-    def get_employee(cls, employee_id):
+    def get_employee(cls,employee_id):
         return cls.query.filter_by(Staff_ID=employee_id).first()
-
+        
+        
 #   method to get own schedule
     def getOwnSchedules(self):
         return self.schedules

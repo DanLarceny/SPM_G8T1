@@ -1,35 +1,43 @@
 from extensions import db
 from models.Employee import Employee
 from datetime import datetime, timedelta
+from sqlalchemy import Enum as SqlEnum
 
 class WFHApplication(db.Model):
     __tablename__ = 'WFH_Application'
     
-    Application_ID = db.Column(db.Integer, primary_key=True)
+    Application_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Employee.Staff_ID'), nullable=False, index=True)
     Start_Date = db.Column(db.DateTime, nullable=False)
     End_Date = db.Column(db.DateTime, nullable=False)
-    Status = db.Column(db.Enum('Pending', 'Rejected', 'Approved', 'Withdrawn'), nullable=False)
-    Time_Slot = db.Column(db.Enum('AM', 'PM', 'Day'), nullable=False)
-    Type = db.Column(db.Enum('AdHoc', 'Recurring'), nullable=False)
+    Status = db.Column(SqlEnum('Pending', 'Rejected', 'Approved', 'Withdrawn'), nullable=False)
+    Time_Slot = db.Column(SqlEnum('AM', 'PM', 'Day'), nullable=False)
+    Type = db.Column(SqlEnum('AdHoc', 'Recurring'), nullable=False)
     Email = db.Column(db.String(50), nullable=False)
-    Reporting_Manager = db.Column(db.String(50), nullable=False)
+    Reporting_Manager = db.Column(db.Integer, nullable=False)
+    Days = db.Column(db.String(50))  # Store the days as a comma-separated string
+    Reason = db.Column(db.String(255))
 
     employee = db.relationship('Employee', foreign_keys=[Staff_ID], backref='applications')
 
     def __repr__(self):
         return f"WFHApplication({self.Application_ID}, {self.Staff_ID}, {self.Status})"
     
-    def __init__(self, Application_ID, Staff_ID, Start_Date, End_Date, Status):
-        self.Application_ID = Application_ID
-        self.Staff_ID = Staff_ID
-        self.Start_Date = Start_Date
-        self.End_Date = End_Date
-        self.Status = Status
-
-        # Validate dates
-        if self.End_Date < self.Start_Date:
-            raise ValueError("End date cannot be earlier than start date")
+    def to_dict(self):
+        return {
+            'Application_ID': self.Application_ID,
+            'Staff_ID': self.Staff_ID,
+            'Start_Date': self.Start_Date.strftime('%Y-%m-%d'), 
+            'End_Date': self.End_Date.strftime('%Y-%m-%d'),
+            'Status': self.Status,
+            'Time_Slot': self.Time_Slot,
+            'Type': self.Type,
+            'Email': self.Email,
+            'Reporting_Manager': self.Reporting_Manager
+        }
+        
+    def get_selected_days(self):
+        return self.Days.split(',') if self.Days else []
 
     def approve(self):
         if self.Status == "pending" or self.Status == "Pending" or self.Status == "PENDING":
@@ -57,69 +65,24 @@ class WFHApplication(db.Model):
             raise ValueError(f"Invalid status: {self.Status}")
 
     @classmethod
-    def createApplication(cls, staff_id, start_date, end_date, time_slot, type, email, reporting_manager):
-
-        try:
-            # Convert dates from string to datetime objects
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
-
-            #validate date range 
-            if start_date < datetime.now().date() or end_date < datetime.now().date():
-                raise ValueError("Cannot apply for past time blocks.")
-            
-            if start_date > end_date:
-                raise ValueError("Start Date cannot be after End Date")
-            
-            if start_date > datetime.now().date() + timedelta(days=365):
-                raise ValueError("Cannot apply for dates which are one year away from the present date.")
-            
-            if type == 'Recurring':
-                #recurring is how recurring? 
-                interval = timedelta(days=14)
-
-                date_arr = []
-                current_start_date = start_date
-                
-                while current_start_date <= end_date:
-                    current_end_date = current_start_date + timedelta(days=13)
-                    date_arr.append((current_start_date, current_end_date))
-                    current_start_date += interval
-                    
-                for start, end in date_arr:
-
-                    new_application = cls(
-                        Staff_ID=staff_id,
-                        Start_Date=start,
-                        End_Date=end,
-                        Time_Slot=time_slot,
-                        Type=type,
-                        Email=email,
-                        Reporting_Manager=reporting_manager,
-                        Status='Pending'  #new application->pending
-                    )
-                    db.session.add(new_application)
-                    
-            else:
-
-                new_application = cls(
-                    Staff_ID=staff_id,
-                    Start_Date=start_date,
-                    End_Date=end_date,
-                    Time_Slot=time_slot,
-                    Type=type,
-                    Email=email,
-                    Reporting_Manager=reporting_manager,
-                    Status='Pending'  #new application->pending
-                )
-                db.session.add(new_application)
-
-            db.session.commit()
-            return new_application
+    def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager):    
+        application = cls(
+            Staff_ID=staff_id,
+            Start_Date=start_date,
+            End_Date=end_date,
+            Status='Pending',  # Default status for new applications
+            Time_Slot=time_slot,
+            Type=type,
+            Email=email,
+            Reporting_Manager=reporting_manager,
+            Days=','.join(selected_days), # Convert list of days to a comma-separated string
+            Reason=reason,
+        )
+        db.session.add(application)
+        db.session.commit()
         
-        except Exception as e:
-            db.session.rollback()
-            raise e
+        return application
+        
         
     @classmethod
     def searchForAvailableDates(cls, staff_id, start_date, end_date):

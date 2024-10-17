@@ -15,7 +15,6 @@ import '../Form.css';
 
 const AppForm = () =>{
 
-    const [username, setUsername] = useState(() => localStorage.getItem('username') || '');
     const [staffId, setStaffId] = useState(() => localStorage.getItem('username') || 'dummy01');
     const [email, setEmail] = useState(() => localStorage.getItem('email') || 'dannytan@allinone.com');
     const [supervisor, setSupervisor] = useState(() => localStorage.getItem('supervisor') || 'super01');
@@ -84,13 +83,25 @@ const AppForm = () =>{
         try {
             alert("Sent request");
             
-            const application = { staffId, email, reason, type, selectedDays, selectedValue1, selectedValue2, supervisor,file };
+            const application = { staffId, email, reason, type, timeslot, selectedDays, selectedValue1, selectedValue2, supervisor,file };
             
-            console.log(application);
-            const response = await axios.post('http://127.0.0.1:5000/createApplication', {
+            console.log(application.staffId);
+            console.log(application.selectedDays);
+            console.log(application.selectedValue1, application.selectedValue2, application.file, application.supervisor);
+            const response = await axios.post('http://127.0.0.1:5001/createApplication', {
                 'employee_id': application.staffId,
-                'start_date': application.selectedValue1, //may need to use date.parse here                'end_date': application.selectedValue2,
+                'start_date': application.selectedValue1, 
+                'end_date': application.selectedValue2,
+                'timeslot': application.timeslot,
+                'selected_days': application.selectedDays,
+                'email': application.email,
                 'reason': application.reason,
+                'supervisor': application.supervisor,
+                'type': application.type,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             // Handle successful response
