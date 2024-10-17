@@ -21,7 +21,7 @@ def validate_dates(start_date, end_date):
     return None  # No validation errors
 
 def create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, reporting_manager):
-    if application_type == "AdHoc":
+    if application_type == "AdHoc" and len(selected_days) == 0:
         return WFHApplication.createApplication(
             staff_id, 
             start_date, 
@@ -33,7 +33,7 @@ def create_application(application_type, staff_id, start_date, end_date, time_sl
             application_type, 
             reporting_manager
         )
-    elif application_type == "Recurring":
+    elif application_type == "Recurring" and len(selected_days) > 0 and start_date != end_date:
         return WFHApplication.createApplication(
             staff_id, 
             start_date, 

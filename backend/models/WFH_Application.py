@@ -65,7 +65,8 @@ class WFHApplication(db.Model):
             raise ValueError(f"Invalid status: {self.Status}")
 
     @classmethod
-    def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager):    
+    def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager):   
+        days = ','.join(selected_days) if selected_days else None
         application = cls(
             Staff_ID=staff_id,
             Start_Date=start_date,
@@ -75,7 +76,7 @@ class WFHApplication(db.Model):
             Type=type,
             Email=email,
             Reporting_Manager=reporting_manager,
-            Days=','.join(selected_days), # Convert list of days to a comma-separated string
+            Days= days, # Convert list of days to a comma-separated string
             Reason=reason,
         )
         db.session.add(application)
