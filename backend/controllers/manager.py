@@ -2,16 +2,15 @@ from flask import Blueprint, jsonify, request
 from models.Employee import Employee
 from models.WFH_Application import WFHApplication
 manager_bp = Blueprint('manager', __name__)
-@manager_bp.route('/viewPendingWFHRequests/<email>', methods=['GET'])
-def view_pending_wfh_requests(email):
+
+@manager_bp.route('/viewPendingWFHRequests/<staff_id>', methods=['GET'])
+def view_pending_wfh_requests(staff_id):
     try:
         # manager = Employee.query.filter_by(Staff_ID=staff_id).first()
         # if not manager:
         #     return jsonify({'error': 'Manager not found'}), 404
         
-        # Get the manager's email
-        print("Manager Email:", email)
-        pending_req = WFHApplication.query.filter_by(Reporting_Manager=email, Status='Pending').all()
+        pending_req = WFHApplication.query.filter_by(Reporting_Manager=staff_id, Status='Pending').all()
         print(pending_req)
         
         if not pending_req:

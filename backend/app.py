@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint, jsonify
 from extensions import db, create_engine_and_session
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -6,6 +6,7 @@ import os
 from config import DevelopmentConfig
 from controllers.employee import employee_bp
 from controllers.WFHApplication import wfh_application_bp
+from controllers.manager import manager_bp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -35,6 +36,7 @@ def create_app(config_type=None):
     # Register blueprints
     app.register_blueprint(employee_bp)
     app.register_blueprint(wfh_application_bp)
+    app.register_blueprint(manager_bp)
     
     @app.teardown_appcontext
     def shutdown_session(exception=None):
@@ -45,6 +47,7 @@ def create_app(config_type=None):
     def welcome():
         return 'hi'
     
+ 
         
 
     return app

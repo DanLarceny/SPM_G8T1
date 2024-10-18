@@ -42,7 +42,7 @@ CREATE TABLE WFH_Application (
     Reason VARCHAR(255),
     Encoded_File MEDIUMTEXT,
     FOREIGN KEY (Staff_ID) REFERENCES Employee(Staff_ID),
-    FOREIGN KEY (Reporting_Manager) REFERENCES Employee(Staff_ID),
+    FOREIGN KEY (Reporting_Manager) REFERENCES Employee(Staff_ID)
 );
 
 -- Creating WFH_Schedule Table
