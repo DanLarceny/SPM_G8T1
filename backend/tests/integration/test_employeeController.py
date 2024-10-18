@@ -1,6 +1,10 @@
 import unittest
 import json
 from flask_testing import TestCase
+import sys 
+import os
+# Add backend to the path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from app import create_app
 from extensions import db
 from models.Employee import Employee
@@ -37,7 +41,7 @@ class TestRegisterEmployee(TestEmployeeController):
         )
         db.session.add(employee)
         db.session.commit()
-   
+
     # happy path
     def test_register_employee(self):
         response = self.client.post('/register', json={
@@ -78,6 +82,60 @@ class TestRegisterEmployee(TestEmployeeController):
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual('No such employee exists', str(res_dict['error']))
+
+    def test_register_employee_already_exists(self): 
+        # Attempt to register the same employee again
+        response = self.client.post('/register', json={
+            'employee_id': '1',
+            'password': 'testpassword',
+            'reconfirm_password': 'testpassword'
+        })
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual('Employee already exists', str(res_dict['error']))
+    
+    #Happy Path for Login
+    def test_login_employee(self):
+        response = self.client.post('/login', json={
+            'username': '1',
+            'password': 'testpassword'
+        })
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual('User logged in successfully', str(res_dict['message']))
+    
+    def test_login_employee_missing_fields(self):
+        response = self.client.post('/login', json={
+            'username': '1'
+            # 'password' is missing
+        })
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual('Employee ID and password are required', str(res_dict['error']))
+    
+    def test_login_employee_not_found(self):
+        response = self.client.post('/login', json={
+            'username': '999',  # Assuming this ID does not exist
+            'password': 'testpassword'
+        })
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual('Employee not found', str(res_dict['error']))
+    
+    def test_login_employee_invalid_password(self): 
+        response = self.client.post('/login', json={
+            'username': '1',
+            'password': 'wrongpassword'
+        })
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual('Invalid password', str(res_dict['error']))
+
+    def test_logout_employee(self):
+        response = self.client.post('/logout')
+        res_dict = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual('User logged out successfully', str(res_dict['message']))
         
 if __name__ == '__main__':
     unittest.main()

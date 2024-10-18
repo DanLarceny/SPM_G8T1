@@ -32,6 +32,11 @@ def register_user():
     if not check_employee:
         return jsonify({"error": "No such employee exists"}), 404
     else:
+        # Check if the employee already exists
+        existing_employee = Employee.query.filter_by(Staff_ID=employee_id).first()
+        if existing_employee:
+            return jsonify({"error": "Employee already exists"}), 400
+        
         hashed_password = generate_password_hash(password)
         check_employee.Password = hashed_password
         db.session.commit()

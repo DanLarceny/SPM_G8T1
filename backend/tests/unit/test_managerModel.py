@@ -2,9 +2,14 @@ import unittest
 from unittest.mock import MagicMock, patch
 from datetime import datetime
 from models.Manager import Manager
+from app import create_app
+from config import TestingConfig
 
 class TestManagerModel(unittest.TestCase):
     def setUp(self):
+        self.app = create_app(TestingConfig)  # Ensure you use the correct testing configuration
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         self.manager = Manager(
             Staff_ID=2,
             Staff_FName='John',
@@ -20,7 +25,9 @@ class TestManagerModel(unittest.TestCase):
         self.mock_application = MagicMock()
         self.mock_application.Application_ID = 100
         
-
+    def tearDown(self):
+        self.app_context.pop()
+    
     # happy path for approve_application
     @patch('extensions.db.session.get')
     def test_approve_application(self, mock_get):
