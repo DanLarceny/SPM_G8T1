@@ -6,9 +6,9 @@ manager_bp = Blueprint('manager', __name__)
 @manager_bp.route('/viewPendingWFHRequests/<staff_id>', methods=['GET'])
 def view_pending_wfh_requests(staff_id):
     try:
-        # manager = Employee.query.filter_by(Staff_ID=staff_id).first()
-        # if not manager:
-        #     return jsonify({'error': 'Manager not found'}), 404
+        manager = Employee.query.filter_by(Staff_ID=staff_id).first()
+        if not manager:
+            return jsonify({'error': 'Manager not found'}), 404
         
         pending_req = WFHApplication.query.filter_by(Reporting_Manager=staff_id, Status='Pending').all()
         print(pending_req)
