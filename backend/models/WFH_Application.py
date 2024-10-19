@@ -159,7 +159,7 @@ class WFHApplication(db.Model):
 
             # get all applications within the date range
             applications = cls.query.filter(
-                cls.staff_id == staff_id,
+                cls.Staff_ID == staff_id,
                 cls.Start_Date <= end_date,
                 cls.End_Date >= start_date
             ).all()
@@ -176,7 +176,7 @@ class WFHApplication(db.Model):
         try:
 
             application = cls.query.filter(
-                cls.staff_id == staff_id,
+                cls.Staff_ID == staff_id,
                 cls.Application_ID == application_id
             ).first()
 
