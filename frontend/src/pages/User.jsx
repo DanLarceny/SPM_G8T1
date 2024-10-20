@@ -7,13 +7,13 @@ import CardContent from '@mui/material/CardContent';
 const UserPage = () => {
     
     const data = {staffId:1001,
-                  username:"user1",
+                  username:localStorage.getItem("username"),
                   firstName:"Danny",
                   lastName:"Tan",
                   dept:"SPM",
                   position:"Product Manager",
                   country:"SG",
-                  email:"danny@smu.sg",
+                  email:localStorage.getItem("email"),
                   reportMgr:2001,
                   role:"staff"
                 };

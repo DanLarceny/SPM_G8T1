@@ -32,9 +32,7 @@ def register_user():
     if not check_employee:
         return jsonify({"error": "No such employee exists"}), 404
     else:
-        # Check if the employee already exists
-        existing_employee = Employee.query.filter_by(Staff_ID=employee_id).first()
-        if existing_employee:
+        if check_employee.Password != "":
             return jsonify({"error": "Employee already exists"}), 400
         
         hashed_password = generate_password_hash(password)
@@ -61,7 +59,7 @@ def login_user():
         # Generate the JWT token
         token = jwt.encode({
             'employee_id': employee.Staff_ID,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            'exp': datetime.utcnow() + timedelta(hours=24)
         }, SECRET_KEY, algorithm='HS256')
         return jsonify({
             "message": "User logged in successfully",

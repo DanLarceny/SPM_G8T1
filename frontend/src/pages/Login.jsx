@@ -20,15 +20,18 @@ export function LoginPage({login}) {
         event.preventDefault();
         const user = { username, password };
         try {
-            // const response = await axios.post('http://127.0.0.1:5000/login', user);
-            let response ={data:{  //store response in localStorage
-                token: "dummy",
-                username: "dummy",
-                email: "hi@gmail",
-                role: "manager",
-            }}; //dummy obj until user side db settled
+            console.log(user)
+            const response = await axios.post('http://localhost:5001/login', user);
+                // let response ={data:{  //store response in localStorage
+                //     token: "dummy",
+                //     employeeId: "180001",
+                //     username: "Ernst",
+                //     email: "Ernst.Sim@allinone.com.sg",
+                //     role: "manager",
+                // }}; //dummy obj until user side db settled
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
+            localStorage.setItem("employeeId", response.data.employeeId);
             localStorage.setItem("username", response.data.username);
             setUsername(response.data.username);
             localStorage.setItem("email", response.data.email);
@@ -40,6 +43,7 @@ export function LoginPage({login}) {
             navigate('/home'); // Redirect to home page
             // setAuth(true)
         } catch (error) {
+            console.log(error);
             alert("Login unsuccessful. Please try again.");
         }
     };
