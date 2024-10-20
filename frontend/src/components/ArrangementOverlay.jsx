@@ -34,7 +34,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
           });
 
           // TODO: Change this to actual connection string
-          const response = await fetch('/api/cancel-arrangement', {
+          const response = await fetch('http://localhost:3000/cancel-arrangement', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
-        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //     throw new Error(errorResponse.error || 'Failed to cancel the arrangement.');
         //   }
     
     
@@ -76,7 +76,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
           });
 
           // TODO: Change this to actual connection string
-          const response = await fetch('/api/withdraw-arrangement', {
+          const response = await fetch('http://localhost:3000/withdraw-arrangement', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
-        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //     throw new Error(errorResponse.error || 'Failed to cancel the arrangement.');
         //   }
     
     
@@ -114,18 +114,19 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
         try {
           console.log({
             id: rowData.applicationId,
-            reason: reason, // Pass cancellation reason to API
+   
           });
 
           // TODO: Change this to actual connection string
-          const response = await fetch('/api/approve-arrangement', {
+          const response = await fetch(`http://localhost:3000/approveWFHRequest/${rowData.applicationId}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+
             },
             body: JSON.stringify({
               id: rowData.applicationId,
-              reason: reason, // Pass cancellation reason to API
+            
             }),
           });
           
@@ -134,7 +135,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
-        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //     throw new Error(errorResponse.error || 'Failed to cancel the arrangement.');
         //   }
     
     
@@ -160,7 +161,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
           });
 
           // TODO: Change this to actual connection string
-          const response = await fetch('/api/reject-arrangement', {
+          const response = await fetch('http://localhost:3000/reject-arrangement', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -176,7 +177,7 @@ const ArrangementOverlay = ({ mode, open, onClose, rowData, onCancel, onWithdraw
 //  use bottom block when connected to BE
         //   if (!response.ok) {
         //     const errorResponse = errResponse; // Get mock error response
-        //     throw new Error(errorResponse.message || 'Failed to cancel the arrangement.');
+        //     throw new Error(errorResponse.error || 'Failed to cancel the arrangement.');
         //   }
     
     

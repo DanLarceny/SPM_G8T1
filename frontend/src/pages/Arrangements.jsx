@@ -28,7 +28,7 @@ export function ArrangementDetailsPage ({ logout }) {
   // const fetchAndCreateData = async (localStorage.getItem("staff_id")) => {
   //       try {
   //           // Make GET request to the endpoint, passing staffId as a parameter
-  //           const response = await axios.get('https://your-endpoint-url.com/api/arrangements', {
+  //           const response = await axios.get(http://localhost:3000/viewOwnSchedule', {
   //               params: { localStorage.getItem("staff_id") }
   //           });
 
