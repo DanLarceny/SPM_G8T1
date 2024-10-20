@@ -32,7 +32,7 @@ def register_user():
     if not check_employee:
         return jsonify({"error": "No such employee exists"}), 404
     else:
-        if check_employee.Password != "":
+        if check_employee.Password != None:
             return jsonify({"error": "Employee already exists"}), 400
         
         hashed_password = generate_password_hash(password)
@@ -65,7 +65,8 @@ def login_user():
             "message": "User logged in successfully",
             "token": token,
             "username": employee.Staff_FName,
-            "email": employee.Email
+            "email": employee.Email,
+            "employeeId": employee.Staff_ID
         }), 200
     else:
         return jsonify({"error": "Invalid password"}), 401

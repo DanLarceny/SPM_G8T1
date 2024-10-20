@@ -29,7 +29,7 @@ const AppForm = () =>{
     const [selectedDays, setSelectedDays] = useState([]);
 
     const apiClient = axios.create({
-        baseURL: 'http://127.0.0.1:5000',  // Set the base URL of your API
+        baseURL: 'http://127.0.0.1:5001',  // Set the base URL of your API
         timeout: 10000,  // Timeout after 10 seconds
       })
 
@@ -121,7 +121,7 @@ const AppForm = () =>{
             });
             console.log(response);
             // Handle successful response
-            // alert(response.data.message);
+            alert(response.data.message);
 
         } catch (error) {
             console.error(error);

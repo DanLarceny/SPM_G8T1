@@ -92,7 +92,7 @@ def apply_wfh():
     application = create_application(application_type, staff_id, start_date, end_date, time_slot, selected_days, email, reason, employee.Reporting_Manager, file)
     
     if application:
-        return jsonify(application.to_dict()), 201
+        return jsonify({"data": application.to_dict(), "message": "Succesfully applied!"}), 201
     else:
         return jsonify({"error": "Invalid request"}), 400
 
