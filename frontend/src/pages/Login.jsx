@@ -21,7 +21,7 @@ export function LoginPage({login}) {
         const user = { username, password };
         try {
             console.log(user)
-            const response = await axios.get('http://localhost:5000/login', user);
+            const response = await axios.post('http://localhost:5001/login', user);
                 // let response ={data:{  //store response in localStorage
                 //     token: "dummy",
                 //     employeeId: "180001",

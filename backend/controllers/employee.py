@@ -59,7 +59,7 @@ def login_user():
         # Generate the JWT token
         token = jwt.encode({
             'employee_id': employee.Staff_ID,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            'exp': datetime.utcnow() + timedelta(hours=24)
         }, SECRET_KEY, algorithm='HS256')
         return jsonify({
             "message": "User logged in successfully",
