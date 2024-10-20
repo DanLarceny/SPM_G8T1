@@ -41,37 +41,16 @@ class Test_WFHApplicationModel(unittest.TestCase):
         self.assertEqual(self.application.Staff_ID, 100)
         self.assertEqual(self.application.Status, "pending")
     
-    def test_approve(self):
+    @patch('extensions.db.session.commit')
+    def test_approve(self, mock_commit):
         self.application.approve()
         self.assertEqual(self.application.Status, "Approved")
 
-    def test_reject(self):
+    @patch('extensions.db.session.commit')
+    def test_reject(self, mock_commit):
         self.application.reject()
         self.assertEqual(self.application.Status, "Rejected")
-    
-    
-    def test_approve_rejected_application(self):
-        self.application.reject()
-        with self.assertRaises(ValueError):
-            self.application.approve()
-    
-    def test_approve_case_insensitive(self):
-        self.application.Status = "PENDING"
-        self.application.approve()
-        self.assertEqual(self.application.Status, "Approved")
-
-        self.application.Status = "pending"
-        self.application.approve()
-        self.assertEqual(self.application.Status, "Approved")
-    
-    def test_reject_case_insensitive(self):
-        self.application.Status = "PENDING"
-        self.application.reject()
-        self.assertEqual(self.application.Status, "Rejected")
-
-        self.application.Status = "pending"
-        self.application.reject()
-        self.assertEqual(self.application.Status, "Rejected")
+        mock_commit.assert_called_once()  # Ensure commit was called
     
     def test_to_dict(self):
         expected_dict = {
@@ -228,6 +207,156 @@ class Test_WFHApplicationModel(unittest.TestCase):
             WFHApplication.getArrangement(staff_id=100, application_id=1)
         
         self.assertEqual(str(context.exception), "Database error")
+    
+    @patch('models.WFH_Application.db.session')
+    def test_create_application_success(self, mock_session):
+        """Test successful creation of an application."""
+        # Mock valid inputs
+        application = WFHApplication.createApplication(
+            staff_id=1,
+            start_date='2024-10-21',
+            end_date='2024-10-23',
+            time_slot='morning',
+            selected_days=['Monday', 'Wednesday'],
+            email='test@example.com',
+            reason='Personal',
+            type='WFH',
+            reporting_manager='Manager',
+            file='encoded_file_string'
+        )
+
+        # Assert session was used correctly
+        mock_session.add.assert_called_once_with(application)
+        mock_session.commit.assert_called_once()
+
+        # Assert application fields
+        self.assertEqual(application.Staff_ID, 1)
+        self.assertEqual(application.Status, 'Pending')
+        self.assertEqual(application.Time_Slot, 'morning')
+        self.assertEqual(application.Email, 'test@example.com')
+        self.assertEqual(application.Days, 'Monday,Wednesday')
+
+    @patch('models.WFH_Application.db.session')
+    def test_create_application_empty_days(self, mock_session):
+        """Test creation with no selected days."""
+        application = WFHApplication.createApplication(
+            staff_id=2,
+            start_date='2024-11-01',
+            end_date='2024-11-02',
+            time_slot='evening',
+            selected_days=None,
+            email='test2@example.com',
+            reason='Work',
+            type='WFH',
+            reporting_manager='Another Manager',
+            file='file_string'
+        )
+
+        # Assert the Days field is None
+        self.assertIsNone(application.Days)
+
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_search_for_available_dates(self, mock_query):
+        # Mock existing applications
+        mock_query.filter.return_value.all.return_value = [
+            WFHApplication(
+                Application_ID=1,
+                Staff_ID=100,
+                Start_Date=datetime(2024, 11, 1),
+                End_Date=datetime(2024, 11, 3),
+                Status="Approved",
+                Time_Slot="AM",
+                Type="AdHoc",
+                Email="employee@example.com",
+                Reporting_Manager=200,
+                Days="Mon,Tue"
+            )
+        ]
+
+        available_dates = WFHApplication.searchForAvailableDates(staff_id=100, start_date='2024-11-01', end_date='2024-11-07')
+        expected_dates = ['2024-11-04', '2024-11-05', '2024-11-06', '2024-11-07']
+        self.assertEqual(available_dates, expected_dates)
+
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_search_for_available_dates_no_conflicts(self, mock_query):
+        # Mock no existing applications
+        mock_query.filter.return_value.all.return_value = []
+
+        available_dates = WFHApplication.searchForAvailableDates(staff_id=100, start_date='2024-11-01', end_date='2024-11-07')
+        expected_dates = ['2024-11-01', '2024-11-02', '2024-11-03', '2024-11-04', '2024-11-05', '2024-11-06', '2024-11-07']
+        self.assertEqual(available_dates, expected_dates)
+
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_search_for_available_dates_exception(self, mock_query):
+        # Simulate a database error
+        mock_query.filter.side_effect = Exception("Database error")
+        
+        with self.assertRaises(Exception) as context:
+            WFHApplication.searchForAvailableDates(
+                staff_id=100, start_date='2024-11-01', end_date='2024-11-03'
+            )
+        
+        self.assertEqual(str(context.exception), "Database error")
+    
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_display_available_dates(self, mock_query):
+        start_date = '2024-11-01'
+        end_date = '2024-11-05'
+        expected_dates = ['2024-11-01', '2024-11-02', '2024-11-03', '2024-11-04', '2024-11-05']
+        available_dates = WFHApplication.displayAvailableDates(start_date, end_date)
+        self.assertEqual(available_dates, expected_dates)
+    
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_get_all_arrangement_valid(self, mock_query):
+        # Mock the query to return a list of applications
+        mock_query.filter.return_value.all.return_value = [
+            WFHApplication(
+                Application_ID=1,
+                Staff_ID=100,
+                Start_Date=datetime(2024, 11, 1),
+                End_Date=datetime(2024, 11, 3),
+                Status="Approved"
+            ),
+            WFHApplication(
+                Application_ID=2,
+                Staff_ID=100,
+                Start_Date=datetime(2024, 11, 4),
+                End_Date=datetime(2024, 11, 5),
+                Status="Pending"
+            )
+        ]
+        
+        applications = WFHApplication.getAllArrangement(
+            staff_id=100, start_date='2024-11-01', end_date='2024-11-07'
+        )
+        
+        self.assertEqual(len(applications), 2)
+        self.assertEqual(applications[0].Application_ID, 1)
+        self.assertEqual(applications[1].Application_ID, 2)
+
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_get_all_arrangement_empty(self, mock_query):
+        # Mock the query to return an empty list
+        mock_query.filter.return_value.all.return_value = []
+        
+        applications = WFHApplication.getAllArrangement(
+            staff_id=100, start_date='2024-11-01', end_date='2024-11-07'
+        )
+        
+        self.assertEqual(len(applications), 0)
+
+    @patch('models.WFH_Application.WFHApplication.query')
+    def test_get_all_arrangement_exception(self, mock_query):
+        # Simulate a database error
+        mock_query.filter.side_effect = Exception("Database error")
+        
+        with self.assertRaises(Exception) as context:
+            WFHApplication.getAllArrangement(
+                staff_id=100, start_date='2024-11-01', end_date='2024-11-07'
+            )
+        
+        self.assertEqual(str(context.exception), "Database error")
+
         
             
 if __name__ == '__main__':

@@ -41,30 +41,13 @@ class WFHApplication(db.Model):
         return self.Days.split(',') if self.Days else []
 
     def approve(self):
-        if self.Status == "pending" or self.Status == "Pending" or self.Status == "PENDING":
-            self.Status = "Approved"
-            db.session.commit()
-        elif self.Status == "approved" or self.Status == "Approved" or self.Status == "APPROVED":
-            # Already approved, no action needed
-            pass
-        elif self.Status == "rejected" or self.Status == "Rejected" or self.Status == "REJECTED":
-            raise ValueError("Cannot approve a rejected application")
-        else:
-            raise ValueError(f"Invalid status: {self.Status}")
+        self.Status = "Approved"
         db.session.commit()
 
     def reject(self):
-        if self.Status == "pending" or self.Status == "Pending" or self.Status == "PENDING":
-            self.Status = "Rejected"
-            db.session.commit()
-        elif self.Status == "rejected" or self.Status == "Rejected" or self.Status == "REJECTED":
-            # Already rejected, no action needed
-            pass
-        elif self.Status == "approved" or self.Status == "Approved" or self.Status == "APPROVED":
-            raise ValueError("Cannot reject an approved application")
-        else:
-            raise ValueError(f"Invalid status: {self.Status}")
-
+        self.Status = "Rejected"
+        db.session.commit()
+        
     @classmethod
     def createApplication(cls, staff_id, start_date, end_date, time_slot, selected_days, email, reason, type, reporting_manager, file):   
         days = ','.join(selected_days) if selected_days else None
@@ -107,7 +90,7 @@ class WFHApplication(db.Model):
             # where they alr applied, block it out and return other dates
 
             existing_applications = cls.query.filter(
-                cls.staff_id == staff_id,
+                cls.Staff_ID == staff_id,
                 cls.Start_Date <= end_date,
                 cls.End_Date >= start_date
             ).all()
@@ -127,7 +110,7 @@ class WFHApplication(db.Model):
             raise e
 
     @classmethod
-    def displayAvailableDates(start_date, end_date):
+    def displayAvailableDates(cls, start_date, end_date):
             
         try:
 
