@@ -41,6 +41,8 @@ class WFHApplication(db.Model):
         return self.Days.split(',') if self.Days else []
 
     def approve(self):
+        if self.Status == 'Rejected':
+            raise ValueError('Cannot approve a rejected application')
         self.Status = "Approved"
         db.session.commit()
 

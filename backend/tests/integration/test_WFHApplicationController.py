@@ -50,8 +50,8 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
 
         response = self.client.post('/createApplication', json={
             'employee_id': 1,
-            'start_date': '2024-10-18',
-            'end_date': '2024-10-25',
+            'start_date': '2024-12-18',
+            'end_date': '2024-12-25',
             'time_slot': 'PM',
             'selected_days': ['Monday', 'Wednesday'],
             'email': 'test@example.com',
@@ -138,8 +138,8 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
     def test_apply_wfh_invalid_date_range(self, MockWFHApplication):
         response = self.client.post('/createApplication', json={
             'employee_id': 1,
-            'start_date': '2024-10-25',
-            'end_date': '2024-10-18',  # End date before start date
+            'start_date': '2024-12-25',
+            'end_date': '2024-12-18',  # End date before start date
             'time_slot': 'PM',
             'email': 'test@example.com',
             'reason': 'Personal reasons',

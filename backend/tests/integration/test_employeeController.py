@@ -37,25 +37,29 @@ class TestRegisterEmployee(TestEmployeeController):
             Email='test@example.com',
             Reporting_Manager=1,  
             Role=1,  # Assuming a valid Role ID
-            Password='testpassword'
+            Password=''
         )
         db.session.add(employee)
         db.session.commit()
 
+    def tearDown(self):
+        super().tearDown()
+
     # happy path
     def test_register_employee(self):
         response = self.client.post('/register', json={
-            'employee_id': '1',
+            'employee_id': 1,
             'password': 'testpassword',
             'reconfirm_password': 'testpassword'
         })
-        res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        res_dict = json.loads(response.data)
+        
         self.assertEqual('User registered successfully', str(res_dict['message']))
     
     def test_register_employee_missing_fields(self):
         response = self.client.post('/register', json={
-            'employee_id': '1',
+            'employee_id': 1,
             'password': 'testpassword'
             # 'reconfirm_password' is missing
         })
@@ -84,6 +88,11 @@ class TestRegisterEmployee(TestEmployeeController):
         self.assertEqual('No such employee exists', str(res_dict['error']))
 
     def test_register_employee_already_exists(self): 
+        self.client.post('/register', json={
+            'employee_id': 1,
+            'password': 'testpassword',
+            'reconfirm_password': 'testpassword'
+        })
         # Attempt to register the same employee again
         response = self.client.post('/register', json={
             'employee_id': '1',
@@ -96,6 +105,11 @@ class TestRegisterEmployee(TestEmployeeController):
     
     #Happy Path for Login
     def test_login_employee(self):
+        self.client.post('/register', json={
+            'employee_id': 1,
+            'password': 'testpassword',
+            'reconfirm_password': 'testpassword'
+        })
         response = self.client.post('/login', json={
             'username': '1',
             'password': 'testpassword'
