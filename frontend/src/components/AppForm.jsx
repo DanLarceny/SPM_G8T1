@@ -14,18 +14,24 @@ import { CalendarComponent } from '@syncfusion/ej2-react-calendars';
 import '../Form.css';
 
 const AppForm = () =>{
+    // daysOfWeek[args.value.getDay()-1].id
 
-    const [staffId, setStaffId] = useState(() => localStorage.getItem('username') || 'dummy01');
+    const [staffId, setStaffId] = useState(() => localStorage.getItem('employeeId') || 'dummy01');
     const [email, setEmail] = useState(() => localStorage.getItem('email') || 'dannytan@allinone.com');
     const [supervisor, setSupervisor] = useState(() => localStorage.getItem('supervisor') || 'super01');
     const [file, setFile] = useState(null);
-    const [selectedValue1, setSelectedValue1] = useState(null);
+    const [selectedValue1, setSelectedValue1] = useState((new Date()).toLocaleDateString());
     const [selectedValue2, setSelectedValue2] = useState(null);
-    const [type, setType] = useState('');
-    const [timeslot, setTimeslot] = useState('');
+    const [type, setType] = useState('AdHoc');
+    const [timeslot, setTimeslot] = useState('AM');
     const [reason, setReason] = useState('');
     const [minDate, setMinDate] = useState(new Date());
     const [selectedDays, setSelectedDays] = useState([]);
+
+    const apiClient = axios.create({
+        baseURL: 'http://127.0.0.1:5000',  // Set the base URL of your API
+        timeout: 10000,  // Timeout after 10 seconds
+      })
 
     const daysOfWeek = [
         { id: "Monday", label: 'Monday' },
@@ -48,6 +54,10 @@ const AppForm = () =>{
     const onchange1 = (args) => {
         if (args) {
             setSelectedValue1(format(args.value, 'yyyy-MM-dd'));
+            if (type == "AdHoc") {
+                setSelectedValue2(format(args.value, 'yyyy-MM-dd'));
+                setSelectedDays([]);
+            }
             setMinDate(args.value);
             console.log(args.value.toLocaleDateString());
         }
@@ -78,39 +88,44 @@ const AppForm = () =>{
         
     };
 
+    // const check = () => {
+    //     if (type == "AdHoc") {
+    //         setSelectedValue2(selectedValue1);
+    //         setSelectedDays([daysOfWeek[(new Date(selectedValue1)).getDay()-1].id])
+    //     }
+
+    // };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            // check();
             alert("Sent request");
             
             const application = { staffId, email, reason, type, timeslot, selectedDays, selectedValue1, selectedValue2, supervisor,file };
-            
+            console.log(application);
             console.log(application.staffId);
             console.log(application.selectedDays);
             console.log(application.selectedValue1, application.selectedValue2, application.file, application.supervisor);
-            const response = await axios.post('http://127.0.0.1:5001/createApplication', {
-                'employee_id': application.staffId,
-                'start_date': application.selectedValue1, 
-                'end_date': application.selectedValue2,
-                'timeslot': application.timeslot,
-                'selected_days': application.selectedDays,
-                'email': application.email,
-                'reason': application.reason,
-                'supervisor': application.supervisor,
-                'type': application.type,
-                "file": application.file
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            const response = await apiClient.post('/createApplication', {
+                employee_id: application.staffId,
+                start_date: application.selectedValue1, 
+                end_date: application.selectedValue2,
+                time_slot: application.timeslot,
+                selected_days: application.selectedDays,
+                email: application.email,
+                reason: application.reason,
+                supervisor: application.supervisor,
+                type: application.type,
+                file: application.file
             });
-
+            console.log(response);
             // Handle successful response
-            alert(`${response.data.message}`);
+            // alert(response.data.message);
 
         } catch (error) {
-            console.error("Form submission failed", error);
-            alert("form submission failed");
+            console.error(error);
+            alert("Error: "+error.response.data.error);
         }
     };
 
@@ -173,7 +188,7 @@ const AppForm = () =>{
                 label="timeslot"
                 onChange={handleTypeChange}
                 >
-                <option value={'AdHoc'}>Ad-Hoc</option>
+                <option value={'AdHoc'} selected>Ad-Hoc</option>
                 <option value={'Recurring'}>Recurring</option>
                
                 </select>
@@ -188,7 +203,7 @@ const AppForm = () =>{
                     label="timeslot"
                     onChange={handleTimeslotChange}
                     >
-                    <option value={'AM'}>AM</option>
+                    <option value={'AM'} selected>AM</option>
                     <option value={'PM'}>PM</option>
                     <option value={"Full-day"}>Full-day</option>
                     </select>
