@@ -13,3 +13,4 @@ venv/
 
 # frontend
 /frontend/node_modules/
+.vercel
