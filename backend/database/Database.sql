@@ -1,6 +1,6 @@
 -- Creating Role Table
 CREATE TABLE Role (
-    Role INT PRIMARY KEY,
+    Role INT PRIMARY KEY AUTO_INCREMENT,
     Role_Name VARCHAR(50) NOT NULL
 );
 
@@ -13,7 +13,7 @@ VALUES
 
 -- Creating Employee Table
 CREATE TABLE Employee (
-    Staff_ID INT PRIMARY KEY,
+    Staff_ID INT PRIMARY KEY AUTO_INCREMENT,
     Staff_FName VARCHAR(50) NOT NULL,
     Staff_LName VARCHAR(50) NOT NULL,
     Dept VARCHAR(50) NOT NULL,
@@ -22,14 +22,14 @@ CREATE TABLE Employee (
     Email VARCHAR(50) NOT NULL,
     Reporting_Manager INT NOT NULL,
     Role INT NOT NULL,
-    Password VARCHAR(50) NOT NULL,
+    Password VARCHAR(250),
     FOREIGN KEY (Role) REFERENCES Role(Role),
     FOREIGN KEY (Reporting_Manager) REFERENCES Employee(Staff_ID)
 );
 
 -- Creating WFH_Application Table
 CREATE TABLE WFH_Application (
-    Application_ID INT PRIMARY KEY,
+    Application_ID INT PRIMARY KEY AUTO_INCREMENT,
     Staff_ID INT NOT NULL,
     Start_Date DATETIME NOT NULL,
     End_Date DATETIME NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE WFH_Application (
 
 -- Creating WFH_Schedule Table
 CREATE TABLE WFH_Schedule (
-    Schedule_ID INT PRIMARY KEY,
+    Schedule_ID INT PRIMARY KEY AUTO_INCREMENT,
     Staff_ID INT NOT NULL,
     Application_ID INT NOT NULL,
     Team_ID INT NOT NULL,

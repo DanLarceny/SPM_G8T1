@@ -47,7 +47,7 @@ def login_user():
     
     employee_id = data.get('username')
     password = data.get('password')
-
+    
     if not employee_id or not password:
         return jsonify({"error": "Employee ID and password are required"}), 400
 
