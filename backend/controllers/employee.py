@@ -1,6 +1,6 @@
 # ALL the employee(general user) logic goes here
 
-from flask import request, jsonify, Blueprint, session
+from flask import request, jsonify, Blueprint, session, current_app
 from models.Employee import Employee
 from models.WFH_Schedule import WFHSchedule
 from models.WFH_Application import WFHApplication
@@ -60,7 +60,7 @@ def login_user():
         token = jwt.encode({
             'employee_id': employee.Staff_ID,
             'exp': datetime.utcnow() + timedelta(hours=24)
-        }, SECRET_KEY, algorithm='HS256')
+        }, current_app.config['SECRET_KEY'], algorithm='HS256')
         return jsonify({
             "message": "User logged in successfully",
             "token": token,
