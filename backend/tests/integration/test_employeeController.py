@@ -37,13 +37,14 @@ class TestRegisterEmployee(TestEmployeeController):
             Email='test@example.com',
             Reporting_Manager=1,  
             Role=1,  # Assuming a valid Role ID
-            Password=''
+            Password=None
         )
         db.session.add(employee)
         db.session.commit()
 
     def tearDown(self):
         super().tearDown()
+        
 
     # happy path
     def test_register_employee(self):

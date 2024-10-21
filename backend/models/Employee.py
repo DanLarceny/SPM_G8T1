@@ -14,7 +14,7 @@ class Employee(db.Model):
     Email = db.Column(db.String(50), nullable=False)
     Reporting_Manager = db.Column(db.Integer, db.ForeignKey('Employee.Staff_ID'), nullable=False)
     Role = db.Column(db.Integer, db.ForeignKey('Role.Role'), nullable=False)
-    Password = db.Column(db.String(255), nullable=False)
+    Password = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         return f"Employee({self.Staff_ID}, {self.Staff_FName}, {self.Staff_LName}, {self.Role})"

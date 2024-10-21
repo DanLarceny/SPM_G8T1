@@ -55,7 +55,7 @@ def login_user():
     if not employee:
         return jsonify({"error": "Employee not found"}), 404
 
-    if check_password_hash(employee.Password, password):
+    if employee.Password and check_password_hash(employee.Password, password):
         # Generate the JWT token
         token = jwt.encode({
             'employee_id': employee.Staff_ID,
