@@ -62,7 +62,7 @@ class TestWFHApplicationControllerTests(TestWFHApplicationController):
         })
         res_dict = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
-        self.assertTrue('Application_ID' in res_dict)
+        self.assertTrue('Application_ID' in res_dict['data'])
 
     # Test missing required fields
     @patch('models.WFH_Application.WFHApplication')  # Mock the WFHApplication model
