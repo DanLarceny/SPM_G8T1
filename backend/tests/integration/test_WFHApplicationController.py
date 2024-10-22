@@ -1,12 +1,16 @@
 import unittest
 import json
+import sys
+import os
+# Add backend to the path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from flask_testing import TestCase
 from unittest.mock import patch, MagicMock
-from extensions import db
 from models.Employee import Employee
 from models.WFH_Application import WFHApplication
 from config import TestingConfig
 from app import create_app
+from extensions import db
 
 
 class TestWFHApplicationController(TestCase):
