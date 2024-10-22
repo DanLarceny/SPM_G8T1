@@ -41,10 +41,30 @@ def approve_wfh_request(application_id):
         wfh_request = WFHApplication.query.get(application_id)
         if not wfh_request:
             return jsonify({'error': 'Request not found'}), 404
- 
+
         return jsonify({'message': 'Request approved'}), 200
-    
-    
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@manager_bp.route('/rejectWFHRequest/<application_id>', methods=['POST'])
+def reject_wfh_request(application_id): 
+    try: 
+        # Fetch the WFH application
+        wfh_request = WFHApplication.query.get(application_id)
+        
+        # Check if the application exists
+        if not wfh_request:
+            return jsonify({'error': 'Request not found'}), 404
+        
+        # Check if the application is pending and the current user is the reporting manager
+        if wfh_request.Status != 'Pending':
+            return jsonify({'error': 'Cannot reject this request'}), 400
+        else: 
+            # Reject the application
+            wfh_request.reject()
+
+        return jsonify({'message': 'Request rejected'}), 200
+    except Exception as e: 
+        return jsonify({'error': str(e)}), 500
+
