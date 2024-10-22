@@ -56,18 +56,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
       - name: Install Vercel CLI
         working-directory: ./frontend 
         run: npm install --global vercel
 
       - name: Pull Vercel Env Info
         working-directory: ./frontend 
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN_ID }}
+        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN_ID }}
 
       - name: Build Project
         working-directory: ./frontend 
-        run: vercel build -- prod --token=${{ secrets.VERCEL_TOKEN_ID }}
+        run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN_ID }}
 
       - name: Deploy Project
         working-directory: ./frontend 
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN_ID }}
+        run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN_ID }}
