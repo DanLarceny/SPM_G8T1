@@ -8,14 +8,16 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { LoginPage } from './pages/Login';
 import  RegisterPage  from './pages/Register';
 import { HomePage } from './pages/Home';
-import { ProfilePage} from './pages/Profile';
-import { PersonalSchedulePage} from './pages/PersonalSchedule';
-import { TeamSchedulePage} from './pages/TeamSchedule';
-import {ApplyArrangementsPage} from './pages/ApplyArrangements';
-import {ArrangementDetailsPage} from './pages/Arrangements';
-import {ManageApplicationPage} from './pages/ManageApplications';
+import { ProfilePage } from './pages/Profile';
+import { PersonalSchedulePage}  from './pages/PersonalSchedule';
+import { TeamSchedulePage } from './pages/TeamSchedule';
+import { ApplyArrangementsPage } from './pages/ApplyArrangements';
+import { ArrangementDetailsPage } from './pages/Arrangements';
+import { ManageApplicationPage } from './pages/ManageApplications';
+import { HRSchedulePage } from './pages/HRSchedule';
 
 import UserPage from './pages/User';
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -65,6 +67,11 @@ function App() {
           <Route path="/manage-applications" element={
             isAuthenticated ? 
               <ManageApplicationPage logout={logout}/>
+            : <Navigate to="/login" />
+            } />
+            <Route path="/hr-schedule" element={
+            isAuthenticated ? 
+              <HRSchedulePage logout={logout}/>
             : <Navigate to="/login" />
             } />
         </Routes>

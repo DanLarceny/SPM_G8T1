@@ -21,14 +21,14 @@ export function LoginPage({login}) {
         const user = { username, password };
         try {
             console.log(user)
-            const response = await axios.post('http://localhost:5001/login', user);
-                // let response ={data:{  //store response in localStorage
-                //     token: "dummy",
-                //     employeeId: "180001",
-                //     username: "Ernst",
-                //     email: "Ernst.Sim@allinone.com.sg",
-                //     role: "manager",
-                // }}; //dummy obj until user side db settled
+            // const response = await axios.post('http://localhost:5001/login', user);
+                let response ={data:{  //store response in localStorage
+                    token: "dummy",
+                    employeeId: "180001",
+                    username: "Ernst",
+                    email: "Ernst.Sim@allinone.com.sg",
+                    role: "HR",
+                }}; //dummy obj until user side db settled
             console.log(response.data)
             localStorage.setItem("access_token", response.data.token);
             localStorage.setItem("employeeId", response.data.employeeId);

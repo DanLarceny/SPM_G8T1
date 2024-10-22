@@ -14,15 +14,16 @@ const UserPage = () => {
                   position:"Product Manager",
                   country:"SG",
                   email:localStorage.getItem("email"),
-                  reportMgr:2001,
-                  role:"staff"
+                  reportMgr:20031,
+                  role:localStorage.getItem("role"),
                 };
+
     return (
         <div className="main" style={{marginTop: '10px'}}>
             <h1>Welcome, {data.username}</h1>
             <Navbar></Navbar>
             <div className="user" style={{paddingLeft: '20px',marginTop:'50px'}}>
-                <h2>Your role is staff</h2>
+                <h2>Your role is {data.role}</h2>
                 <h2>ID: {data.staffId}</h2>
                 <h2>Full name: {data.firstName+data.lastName}</h2>
                 <h2>Email: {data.email}</h2>

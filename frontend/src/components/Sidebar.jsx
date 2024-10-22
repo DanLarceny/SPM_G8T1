@@ -15,6 +15,7 @@ const Sidebar = ({ logout }) => {
 
     const navigate = useNavigate();
     const isManager = (localStorage.getItem("role") === 'manager');
+    const isHR = (localStorage.getItem("role") === 'HR');
 
     const handleLogout = () => {
       localStorage.clear();
@@ -92,6 +93,26 @@ const Sidebar = ({ logout }) => {
                 <Description />
               </ListItemIcon>
               <ListItemText primary="Approve/Reject requests" />
+            </ListItem>
+            <ListItem button 
+            disabled={!isHR} 
+            onClick={() => {
+              if (isHR) {
+                handleNavigation('/hr-schedule'); // Only navigate if condition is true
+              } else {
+                console.log('User does not have permission to navigate');
+              }
+            }}
+            sx={{
+              opacity: !isHR ? 0.5 : 1,                 // Reduced opacity when disabled
+              filter: !isHR ? 'grayscale(100%)' : 'none', // Apply grayscale when disabled
+              cursor: !isHR ? 'not-allowed' : 'pointer',  // Change cursor
+            }}
+          >
+              <ListItemIcon>
+                <Description />
+              </ListItemIcon>
+              <ListItemText primary="View all schedules" />
             </ListItem>
           </List>
 
