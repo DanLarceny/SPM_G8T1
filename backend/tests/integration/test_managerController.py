@@ -207,5 +207,29 @@ class TestManagerController(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn('Request not found', response.get_json()['error'])
 
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    @patch('models.Employee.Employee.query.filter_by')
+    def test_view_wfh_request_details_success(self, mock_employee_query, mock_wfh_query):
+        # Mock the WFH application and employee
+        mock_wfh_request = WFHApplication(Application_ID=1, Staff_ID=1, Start_Date=datetime(2024, 11, 1, 9, 0, 0), End_Date=datetime(2024, 11, 5, 17, 0, 0))
+        mock_employee = Employee(Staff_ID=1, Staff_FName="John", Staff_LName="Doe")
+        
+        mock_wfh_query.return_value = mock_wfh_request
+        mock_employee_query.return_value = mock_employee
+
+        response = self.client.get('/viewWFHRequestDetails/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('requester_name', response.get_json())
+        self.assertIn('request_date_time', response.get_json())
+        self.assertIn('requested_wfh_dates', response.get_json())
+
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    def test_view_wfh_request_details_request_not_found(self, mock_wfh_query):
+        mock_wfh_query.return_value = None
+
+        response = self.client.get('/viewWFHRequestDetails/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Request not found', response.get_json()['error'])
+
 if __name__ == '__main__':
     unittest.main()
