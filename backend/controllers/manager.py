@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models.Employee import Employee
 from models.WFH_Application import WFHApplication
+from datetime import datetime
 manager_bp = Blueprint('manager', __name__)
 
 @manager_bp.route('/viewPendingWFHRequests/<staff_id>', methods=['GET'])
@@ -68,3 +69,34 @@ def reject_wfh_request(application_id):
     except Exception as e: 
         return jsonify({'error': str(e)}), 500
 
+@manager_bp.route('/viewWFHRequestDetails/<application_id>', methods=['GET'])
+def view_wfh_request_details(application_id): 
+    try: 
+        # Fetch the WFH application
+        wfh_request = WFHApplication.query.get(application_id)
+        
+        # Check if the application exists
+        if not wfh_request:
+            return jsonify({'error': 'Request not found'}), 404
+
+        # Fetch the employee details
+        employee = Employee.query.get(wfh_request.Staff_ID)
+        if not employee:
+            return jsonify({'error': 'Requester not found'}), 404
+        
+        # Prepare the response data
+        request_details = {
+            "requester_name": f"{employee.Staff_FName} {employee.Staff_LName}",
+            "request_date_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "requested_wfh_dates": {
+            "start_date": wfh_request.Start_Date.strftime("%Y-%m-%d"),
+            "end_date": wfh_request.End_Date.strftime("%Y-%m-%d")
+            },
+            "reason": wfh_request.Reason,
+            "encoded_file": wfh_request.Encoded_File,
+            "type": wfh_request.Type
+        }
+        return jsonify(request_details), 200
+
+    except Exception as e: 
+        return jsonify({'error' : str(e)}), 500
