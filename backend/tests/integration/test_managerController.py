@@ -7,6 +7,7 @@ from datetime import datetime
 # Add backend to the path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from app import create_app
+from unittest.mock import patch
 from extensions import db
 from models.Employee import Employee
 from models.Manager import Manager
@@ -155,5 +156,56 @@ class TestManagerController(TestCase):
         response = self.client.post('/viewPendingWFHRequests/12345') 
         self.assertEqual(response.status_code, 405)  
     
+
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    @patch('models.Employee.Employee.query.filter_by')
+    def test_approve_wfh_request_success(self, mock_employee_query, mock_wfh_query):
+        # Mock the employee and WFH application
+        mock_employee = Employee(Staff_ID=1)
+        mock_wfh_request = WFHApplication(Application_ID=1, Status='Pending', Reporting_Manager=1)
+        
+        mock_employee_query.return_value.first.return_value = mock_employee
+        mock_wfh_query.return_value = mock_wfh_request
+
+        response = self.client.post('/approveWFHRequest/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Request approved', response.get_json()['message'])
+        
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    @patch('models.Employee.Employee.query.filter_by')
+    def test_approve_wfh_request_not_found(self, mock_employee_query, mock_wfh_query):
+        # Mock the employee and WFH application
+        mock_employee_query.return_value.first.return_value = None
+        mock_wfh_query.return_value = None
+
+        response = self.client.post('/approveWFHRequest/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Request not found', response.get_json()['error'])
+
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    @patch('models.Employee.Employee.query.filter_by')
+    def test_reject_wfh_request_success(self, mock_employee_query, mock_wfh_query):
+        # Mock the employee and WFH application
+        mock_employee = Employee(Staff_ID=1)
+        mock_wfh_request = WFHApplication(Application_ID=1, Status='Pending', Reporting_Manager=1)
+        
+        mock_employee_query.return_value.first.return_value = mock_employee
+        mock_wfh_query.return_value = mock_wfh_request
+
+        response = self.client.post('/rejectWFHRequest/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Request rejected', response.get_json()['message'])
+
+    @patch('models.WFH_Application.WFHApplication.query.get')
+    @patch('models.Employee.Employee.query.filter_by')
+    def test_reject_wfh_request_not_found(self, mock_employee_query, mock_wfh_query):
+        # Mock the employee and WFH application
+        mock_employee_query.return_value.first.return_value = None
+        mock_wfh_query.return_value = None
+
+        response = self.client.post('/rejectWFHRequest/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Request not found', response.get_json()['error'])
+
 if __name__ == '__main__':
     unittest.main()
